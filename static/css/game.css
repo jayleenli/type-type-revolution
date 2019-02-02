@@ -11,6 +11,7 @@ body{
 	width: 100%;
 	border: 1px solid black;
 	padding: 15px;
+    font-size: 2vw;
 }
 
 .container {
@@ -35,6 +36,7 @@ ul > li {
 	text-align: center;
 	background-color: transparent;
 	transition: 1s;
+    font-size: 2.5vw;
 }
 
 li:hover {
@@ -58,6 +60,10 @@ li:hover {
     display: flex; 
 }
 
-#time-bar{
-    
+#timer-bar{
+    width: 70vw;
+}
+
+#timer-num{
+    font-size: 3vw;
 }
