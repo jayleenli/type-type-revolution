@@ -1,0 +1,47 @@
+* {
+	margin:0;
+	padding:0;
+	line-height:1; 
+}
+
+body{
+    text-align: center;
+}
+
+#game-header{
+/*    text-align: center;*/
+    background-color: rgba(0, 0, 0, .5);
+    padding-top: 1.5vw;
+    padding-bottom: 1.5vw;
+    font-size: 2vw;
+}
+
+.input-label{
+    font-size: 3vw;
+    padding-bottom: 1vw;
+}
+
+#join-game{
+    padding-top: 18vh;
+}
+
+#roomPIN{
+    text-align: center;
+    width: 60vw;
+    font-size: 3vw;
+    height: 10vw;
+    margin-bottom: 5vh;
+}
+
+#playerName{
+    text-align: center;
+    width: 60vw;
+    font-size: 3vw;
+    height: 10vw;
+}
+
+#join-game-button{
+    width: 60vw;
+    height: 8vw;
+    font-size: 3vw;
+}
