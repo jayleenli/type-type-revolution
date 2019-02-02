@@ -25,13 +25,15 @@ function populateWords()
 
 function startCountDown(duration) //duration in seconds
 {
+	document.getElementById("timer-bar").style.width = "0px";
 	var timer = duration;
-
 	var countdown = setInterval(function(){ 
 		//console.log(timer);
+		document.getElementById("timer-num").innerHTML = timer;
 		if (--timer < 0) {
 			//hit zero do something
             clearInterval(countdown)
+
         }
 	 }, 1000);
 }

@@ -80,9 +80,21 @@ li:hover {
 }
 
 #timer-bar{
-    width: 70vw;
+  width: 100%;
+  height: 15px;
+  margin-right:15px;
+  background: red;
+  -webkit-transition: width 30s; /* Safari */
+  -webkit-transition-timing-function: linear; /* Safari */
+  transition: width 30s;
+  transition-timing-function: linear;
 }
 
 #timer-num{
-    font-size: 3vw;
+	color: white;
+	font-family: "Lato", Helvetica, Arial, sans-serif;
+	height: 100%;
+	font-weight: bold;
+	font-size: 13px;
+    float: right;
 }
