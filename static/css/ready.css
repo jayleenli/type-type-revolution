@@ -66,13 +66,14 @@ li:hover {
 	height: 50px;
 	left: 300px;
 	text-align: center;
+	padding-top: 20px;
 }
 
 .main{
     position: fixed;
 	width: calc(100% - 300px);
 	left: 300px;
-	top: 50px;
+	top: 70px;
 	text-align: center;
 }
 
@@ -80,6 +81,8 @@ li:hover {
 	border: none;
 	background-color: #a9a9a9;
 	display: flex;
+	margin: 0px 0px 10px 0px;
+	padding-left: 20px;
 
 }
 
@@ -89,13 +92,25 @@ li:hover {
 
 #abilities-list{
     list-style-type: none;
-/*	align-items: center;
-	justify-content: center;*/
+    width: 50%;
+	overflow: scroll;
+/*	justify-content: center;
+	align-items: center;*/
 }
 
-/*
-.ability-item{
-    text-align: center;
-    font-size: 1vw;
+.ability-name{
+	padding-left: 25px;
+	padding-right: 30px;
 }
-*/
+
+#lower-right{
+	position: fixed;
+	right: 20px;
+	bottom: 20px;
+}
+
+#ready-button{
+	width: 200px;
+	font-size: 20px;
+	height: 40px;
+}
