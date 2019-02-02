@@ -40,7 +40,7 @@ TTR.prototype.checkSetup = function(){
 };
 
 TTR.prototype.listenUsers = function() {
-  this.database.ref(this.roomCode + "/players").on('value', (snapshot) => {
+  this.database.ref(this.roomPin + "/players").on('value', (snapshot) => {
     if (snapshot.val()) {
       this.allPlayers = snapshot.val();
       console.log(this.allPlayers[this.playerId]);
@@ -53,13 +53,13 @@ TTR.prototype.listenUsers = function() {
 };
 
 TTR.prototype.listenAbilities = function() {
-  this.database.ref(this.roomCode + "/abilities").on('value', (snapshot) => {
+  this.database.ref(this.roomPin + "/abilities").on('value', (snapshot) => {
     if (snapshot.val()) {
       this.abilities = snapshot.val();
-      var recentAbility = abilities[Object.keys(abilities).sort().pop()];
+      var recentAbility = this.abilities[Object.keys(this.abilities).sort().pop()];
       if (recentAbility.user !== this.playerId)
       {
-        this.castAbility(skill);
+        castAbility(recentAbility.effect);
       }
     }
   }).bind(this);
@@ -70,14 +70,34 @@ TTR.prototype.initFirebase = function() {
   this.database = firebase.database();
   
   this.playerId = getParameterByName('id');
-  this.roomCode = getParameterByName('room');
-  console.log(this.playerId + " and " + this.roomCode);
+  this.roomPin = getParameterByName('room');
+  console.log(this.playerId + " and " + this.roomPin);
 
-  // this.listenAbilities();
+  this.listenAbilities();
   this.listenUsers();
+  this.sendAbility();
 };
 
-/*
+
+TTR.prototype.sendAbility = function() {
+  this.abilityDb= this.database.ref(this.roomPin + "/abilities").push().key;
+
+  var updates = {};
+  updates[this.roomPin + "/abilities/" + this.abilityDb] = { 
+    "effect": "test",
+    "user": this.playerId
+  };
+
+  this.database.ref().update(updates, function(error) {
+    if(error) {
+      console.log(error);
+    }
+    else {
+      console.log("Successfully casted ability!");
+    }
+  }.bind(this));
+};
+
 //updating ur own wpm -- writing
 TTR.prototype.updateWpm = () => {
   console.log("updating wpm");
@@ -90,12 +110,12 @@ function isDead(){
 
 //cast abilities
 function castAbility(skill){
-  console.log('casting ability to u');
-  setTimeout(revert(skill), 5000)
+  console.log('casting ability to u - skill: ' + skill);
+  setTimeout(function() {revert(skill);}, 10000);
 };
 
 //revert client back to normal
 function revert(skill){
-  console.log("reverting!");
+  console.log("reverting, skill: " + skill);
 };
-*/
+
