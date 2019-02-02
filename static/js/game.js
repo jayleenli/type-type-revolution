@@ -145,6 +145,39 @@ function renderUserlist(userList) {
   //console.log(userNames);
 }
 
+//this.kickLastWPMUser();
+
+TTR.prototype.kickLastWPMUser = function() {
+  this.database.ref(this.roomPin + "/players").on('value', (snapshot) => {
+    if (snapshot.val()) {
+      players = snapshot.val();
+      //console.log(players);
+      var minWPM = 1000;
+      var minKey;
+      for (var key in players) {
+        if (players[key].isDead === false && players[key].wpm < minWPM)
+        {
+            minKey = key;
+            minWPM = players[key].wpm;
+            console.log("new min" + minWPM + "key" + minKey);
+        }
+      }
+
+        var updates = {};
+        updates[this.roomPin + '/players/' + minKey + "/isDead"] = true;
+        this.database.ref().update(updates, function(error) {
+          if(error) {
+            console.log(error);
+          }
+          else {
+            console.log("updated isDead");
+          }
+        }.bind(this));
+    }
+
+  }).bind(this);
+};
+
 // Checks that the Firebase SDK has been correctly setup and configured.
 TTR.prototype.checkSetup = function(){
   if (!window.firebase || !(firebase.app instanceof Function) || !firebase.app().options) {
