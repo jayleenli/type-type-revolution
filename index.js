@@ -32,12 +32,12 @@ TTR.prototype.initFirebase = function() {
   //Shortcuts to Firebase SDK features
   this.database = firebase.database();
 	
-	this.testDisconnect();
+	// this.testDisconnect();
 };
 
-TTR.prototype.testDisconnect = function() {
-	var ref = this.database.ref("test").onDisconnect().set(true);
-}
+// TTR.prototype.testDisconnect = function() {
+// 	var ref = this.database.ref("test").onDisconnect().set(true);
+// }
 
 TTR.prototype.joinGame = function() {
 	this.playerName = this.playerNameInput.value;
@@ -81,7 +81,7 @@ TTR.prototype.joinGame = function() {
 						this.warningDiv.removeAttribute("hidden");
 					}
 					else {
-						window.location.replace("game.html?id=" + this.playerId);
+						window.location.replace("game.html?id=" + this.playerId + "&room=" + this.roomPin);
 						console.log("Redirecting to game page");
 					}
 				}.bind(this));
