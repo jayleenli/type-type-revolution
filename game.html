@@ -3,27 +3,28 @@
 <head>
   <link rel="stylesheet" href="static/css/game.css">
 </head>
-<body>
-  <h1 class="container">Type Type Revolution</h1>
 
-  <div id="left">
-    <div class="container user-list">
-      <ul id = "user-list">
-      </ul>
+<body>
+  <div class="left">
+    <div class="container">
+      <h2>Type Type Revolution</h2>
+    </div>
+    <div class="container">
+      <ul id="user-list"></ul>
     </div>
   </div>
 
-  <div id="right">
-      <div id= "timer">
-          <div id= "timer-bar">
-            <div id= "timer-num">
-              30
-            </div>
-          </div>
-      </div>
-    <div class="container">
-      <div id="generated-text">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam vel odio eu lacus faucibus tincidunt sit amet sed dui. Donec molestie velit at mauris pretium bibendum. Nunc aliquet sem vel lorem laoreet, id malesuada ante dapibus. Duis sit amet vestibulum sapien. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Vivamus vitae blandit ante, in rutrum quam. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Ut scelerisque est sit amet nunc vestibulum, eu rhoncus nibh tincidunt. Quisque luctus rutrum dui, vel vehicula ligula consectetur vitae. Aliquam interdum sed odio commodo gravida. Etiam libero justo, ultricies a tincidunt ut, pretium nec orci. Vivamus rutrum eros quam, non posuere nisl consectetur sed. Vestibulum dapibus sem blandit, sollicitudin sapien in, convallis nibh. Quisque facilisis fringilla pretium.
+  <div class="right">
+    <div id= "timer">
+      <div id="timer-bar-back"></div>
+      <div id= "timer-bar"></div>
+      <div id= "timer-num">30</div>
+    </div>
+    <div class="main">
+      <div class="container">
+        <div id="generated-text">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam vel odio eu lacus faucibus tincidunt sit amet sed dui. Donec molestie velit at mauris pretium bibendum. Nunc aliquet sem vel lorem laoreet, id malesuada ante dapibus. Duis sit amet vestibulum sapien. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Vivamus vitae blandit ante, in rutrum quam. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Ut scelerisque est sit amet nunc vestibulum, eu rhoncus nibh tincidunt. Quisque luctus rutrum dui, vel vehicula ligula consectetur vitae. Aliquam interdum sed odio commodo gravida. Etiam libero justo, ultricies a tincidunt ut, pretium nec orci. Vivamus rutrum eros quam, non posuere nisl consectetur sed. Vestibulum dapibus sem blandit, sollicitudin sapien in, convallis nibh. Quisque facilisis fringilla pretium.
+        </div>
       </div>
     </div>
 
@@ -32,8 +33,10 @@
       <input max="30" id="user-text" placeholder="Type here...">
     </div>
   </div>
+
+  <!-- Firebase Scripts -->
+  <script src= "static/js/game.js"></script>
   <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase.js"></script>
-    <script src= "static/js/game.js"></script>
   <script>
     // Initialize Firebase
     var config = {

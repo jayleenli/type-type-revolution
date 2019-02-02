@@ -5,42 +5,55 @@
 	font-family: "Lato", Helvetica, Arial, sans-serif;
 }
 
-body{
+body {
+
 }
 
 #generated-text {
 	width: 100%;
 	padding: 15px;
 	border: 2px solid #bdc3c7;
-    color: #34495e;
-    font-family: "Lato", Helvetica, Arial, sans-serif;
-    font-size: 15px;
-    line-height: 1.467;
-    border-radius: 6px;
-    box-shadow: none;
+  color: #34495e;
+  font-family: "Lato", Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.467;
+  border-radius: 6px;
+  box-shadow: none;
 }
 
 .container {
-	margin: 15px;
+	padding: 15px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
 
-#left {
+.left {
+	color: #FFF;
+	height: 100%;
+	width: 300px;
+	position: fixed;
 	float:left;
+	background-color: #696969;
+}
+
+.right {
+	margin-left: 300px;
+}
+
+.main {
+	padding-top: 45px;
 }
 
 ul {
 	list-style-type: none;
-	width: 200px;
+	width: 100%;
 }
 
 ul > li {
 	padding: 8% 0px;
-	text-align: center;
 	background-color: transparent;
-	border: 1px solid #d9d9d9;
+	border-bottom: 1px solid #d9d9d9;
 	transition: 1s;
 	cursor: pointer;
 }
@@ -49,18 +62,23 @@ li:hover {
 	background-color: grey;
 }
 
+/*li .name {
+	font-size: 20px;
+	font-weight: bold;
+}*/
+
 #user-text {
 	width: 200px;
 	padding: 10px;
 	border: 2px solid #20c997;
-    color: #34495e;
-    font-family: "Lato", Helvetica, Arial, sans-serif;
-    font-size: 15px;
-    line-height: 1.467;
-    padding: 8px 12px;
-    height: 30px;
-    border-radius: 6px;
-    box-shadow: none;
+  color: #34495e;
+  font-family: "Lato", Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.467;
+  padding: 8px 12px;
+  height: 30px;
+  border-radius: 6px;
+  box-shadow: none;
 }
 
 .highlight-green {
@@ -76,13 +94,13 @@ li:hover {
 }
 
 #timer{
-    display: flex; 
+    /*display: flex; */
 }
 
-#timer-bar{
-  width: 100%;
-  height: 15px;
-  margin-right:15px;
+#timer-bar {
+	position: fixed;
+  width: calc(100% - 300px);
+  height: 45px;
   background: red;
   -webkit-transition: width 30s; /* Safari */
   -webkit-transition-timing-function: linear; /* Safari */
@@ -90,11 +108,21 @@ li:hover {
   transition-timing-function: linear;
 }
 
+#timer-bar-back {
+	position: fixed;
+  width: calc(100% - 300px);
+	height: 45px;
+	background: #696969;
+}
+
 #timer-num{
+	position: fixed;
+  width: calc(100% - 300px);
+  height: 45px;
+	padding: 5px;
 	color: white;
 	font-family: "Lato", Helvetica, Arial, sans-serif;
-	height: 100%;
 	font-weight: bold;
-	font-size: 13px;
-    float: right;
+	font-size: 30px;
+	text-align: center;
 }
