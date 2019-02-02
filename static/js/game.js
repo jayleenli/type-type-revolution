@@ -69,7 +69,7 @@ function populateWords()
   var wordsString = document.getElementById("generated-text").innerHTML;
   //console.log(wordsString);
   words = wordsString.split(" ");
-  words = words.slice(8,words.length); //weird 8 blanks in beginning
+  words = words.slice(10,words.length); //weird 8 blanks in beginning
   word_index = 0;
   //console.log(words);
 
@@ -135,15 +135,21 @@ function renderUserlist(userList) {
     userNames.removeChild(userNames.firstChild);
   }
 
-  for (var key in userList) {
-    //console.log(userList[key].name);
-    //userNames.push(userList[key].name);
+  var sorted = Object.keys(userList)
+  .sort(function(a, b) {
+    return userList[b].wpm - userList[a].wpm; // Organize the category array
+  })
+  .map(function(category) {
+    return userList[category]; // Convert array of categories to array of objects
+  });  
+  for (var i in sorted) {
     var listElement = document.createElement("li");  
-    var text = document.createTextNode(userList[key].name);  
+    var text = document.createTextNode(sorted[i].name + "      --- WPM: " + sorted[i].wpm);  
     listElement.appendChild(text);
     userNames.appendChild(listElement);
   }
   //console.log(userNames);
+  
 }
 
 //this.kickLastWPMUser();
@@ -191,6 +197,7 @@ TTR.prototype.checkSetup = function(){
 TTR.prototype.listenUsers = function() {
   this.database.ref(this.roomPin + "/players").on('value', (snapshot) => {
     if (snapshot.val()) {
+      console.log(snapshot.val());
       this.allPlayers = snapshot.val();
       //console.log(this.allPlayers[this.playerId]);
       this.player = this.allPlayers[this.playerId];
