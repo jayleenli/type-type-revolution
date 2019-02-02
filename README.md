@@ -1,0 +1,2 @@
+# SLO-HACKS-2019
+Project for SLO HACKS 2019
