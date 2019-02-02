@@ -4,11 +4,10 @@
 	line-height:1; 
 /*	font-family: "Lato", Helvetica, Arial, sans-serif;
 */	
-	font-family: 'Roboto', sans-serif;
 }
 
 body {
-
+	font-family: 'Roboto', sans-serif;
 }
 
 #generated-text {
@@ -75,8 +74,8 @@ li:hover {
 	padding: 10px;
 	border: 2px solid #20c997;
   color: #34495e;
-  font-family: "Lato", Helvetica, Arial, sans-serif;
-  font-size: 15px;
+/*  font-family: "Lato", Helvetica, Arial, sans-serif;
+*/  font-size: 15px;
   line-height: 1.467;
   padding: 8px 12px;
   height: 30px;
@@ -124,8 +123,8 @@ li:hover {
   height: 45px;
 	padding: 5px;
 	color: white;
-	font-family: "Lato", Helvetica, Arial, sans-serif;
-	font-weight: bold;
+/*	font-family: "Lato", Helvetica, Arial, sans-serif;
+*/	font-weight: bold;
 	font-size: 30px;
 	text-align: center;
 }
