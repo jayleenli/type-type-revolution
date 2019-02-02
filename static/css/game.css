@@ -44,3 +44,11 @@ li:hover {
 	width: 200px;
 	padding: 10px;
 }
+
+.highlight-green {
+	background-color: #00FF00
+}
+
+.highlight-red {
+	background-color: #FF0000
+}
