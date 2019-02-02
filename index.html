@@ -1,22 +1,49 @@
 <!DOCTYPE html>
 <html>
+<head>
+  <link rel="stylesheet" href="static/css/main.css">
+  <script type="text/javascript">
+    
+  </script>
+</head>
 <body>
-<h1>Hello World</h1>
-<p>Chicken is pretty cool.</p>
+  <h1 class="container">Type Type Revolution</h1>
 
-<script src="https://www.gstatic.com/firebasejs/5.8.2/firebase.js"></script>
-<script>
-  // Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyBhsOlePX4aJ6v7XLToyBWsNLjq9aRtbgM",
-    authDomain: "typetyperevolution.firebaseapp.com",
-    databaseURL: "https://typetyperevolution.firebaseio.com",
-    projectId: "typetyperevolution",
-    storageBucket: "typetyperevolution.appspot.com",
-    messagingSenderId: "700874066942"
-  };
-  firebase.initializeApp(config);
-</script>
+  <div id="left">
+    <div class="container user-list">
+      <ul>
+        <li>Andrew</li>
+        <li>Tina</li>
+        <li>Jayleen</li>
+        <li>Jennifer</li>
+      </ul>
+    </div>
+  </div>
 
+  <div id="left">
+    <div class="container">
+      <div id="generated-text">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam vel odio eu lacus faucibus tincidunt sit amet sed dui. Donec molestie velit at mauris pretium bibendum. Nunc aliquet sem vel lorem laoreet, id malesuada ante dapibus. Duis sit amet vestibulum sapien. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Vivamus vitae blandit ante, in rutrum quam. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Ut scelerisque est sit amet nunc vestibulum, eu rhoncus nibh tincidunt. Quisque luctus rutrum dui, vel vehicula ligula consectetur vitae. Aliquam interdum sed odio commodo gravida. Etiam libero justo, ultricies a tincidunt ut, pretium nec orci. Vivamus rutrum eros quam, non posuere nisl consectetur sed. Vestibulum dapibus sem blandit, sollicitudin sapien in, convallis nibh. Quisque facilisis fringilla pretium.</p>
+      </div>
+    </div>
+
+    <div class="container">
+      <input max="30" id="user-text" placeholder="Type here..."></textarea>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyBhsOlePX4aJ6v7XLToyBWsNLjq9aRtbgM",
+      authDomain: "typetyperevolution.firebaseapp.com",
+      databaseURL: "https://typetyperevolution.firebaseio.com",
+      projectId: "typetyperevolution",
+      storageBucket: "typetyperevolution.appspot.com",
+      messagingSenderId: "700874066942"
+    };
+    firebase.initializeApp(config);
+  </script>
 </body>
 </html>
