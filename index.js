@@ -68,10 +68,11 @@ TTR.prototype.joinGame = function() {
 					wpm: 0
 				}
 
-				var playerId = this.database.ref(this.roomPin + "/players").push().key;
+				this.playerId = this.database.ref(this.roomPin + "/players").push().key;
+				console.log(this.playerId);
 
 				var updates = {};
-				updates[this.roomPin + "/players/" + playerId] = player;
+				updates[this.roomPin + "/players/" + this.playerId] = player;
 
 				this.database.ref().update(updates, function(error) {
 					if(error) {
@@ -80,7 +81,8 @@ TTR.prototype.joinGame = function() {
 						this.warningDiv.removeAttribute("hidden");
 					}
 					else {
-						console.log("wow it worked");
+						window.location.replace("game.html?id=" + this.playerId);
+						console.log("Redirecting to game page");
 					}
 				}.bind(this));
 			}
