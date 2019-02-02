@@ -8,7 +8,8 @@ var typedWords = 0.0;
 
 window.onload = function() {
   window.TTR = new TTR();
-  document.getElementById("user-text").addEventListener('keypress', function checkKeyPress(e) {
+  var user_text = document.getElementById("user-text");
+  user_text.addEventListener('keypress', function checkKeyPress(e) {
     if (started === 0)
     {
       startCountDown(30);
@@ -16,6 +17,11 @@ window.onload = function() {
       started = 1;
     }
     
+    if (e.keyCode >= 49 && e.keyCode <=51)
+    {
+        e.preventDefault();
+    }
+
     if (e.keyCode == 32 || e.keyCode == 13) //space
     {
       //console.log(word_index);
@@ -25,14 +31,14 @@ window.onload = function() {
       //console.log(id);
       //console.log(currentWord);
 
-      if (document.getElementById("user-text").value === currentWord) 
+      if (user_text.value === currentWord) 
       {
         //make the word red
         document.getElementById(id).className = "highlight-green";
         typedWords++;
         //console.log("match");
       }
-      else if (document.getElementById("user-text").value !== currentWord)
+      else if (user_text.value !== currentWord)
       {
         //make the word green
         document.getElementById(id).className = "highlight-red";
@@ -41,26 +47,19 @@ window.onload = function() {
 
       //reset the field
       word_index++;
-      document.getElementById("user-text").value = "";
+      user_text.value = "";
     }
   });
 };
 
+function getAbility(id) {
+  var user_text = document.getElementById("user-text");
+  return document.getElementById(id).getAttribute('data-id');
+}
+
 //Firebase Initialization
 function TTR() {
   this.checkSetup();
-
-  //Shortcuts to DOM elements
-  /*
-  this.playerNameInput = document.getElementById('playerName');
-  this.roomPinInput = document.getElementById('roomPin');
-  this.joinGameButton = document.getElementById('join-game-button');
-  this.warningDiv = document.getElementById('warning-div');
-  this.warningMessage = document.getElementById('warning-message');
-  */
-
-  //this.joinGameButton.addEventListener('click', this.joinGame.bind(this));
-
   this.initFirebase();
 };
 
@@ -197,7 +196,6 @@ TTR.prototype.checkSetup = function(){
 TTR.prototype.listenUsers = function() {
   this.database.ref(this.roomPin + "/players").on('value', (snapshot) => {
     if (snapshot.val()) {
-      console.log(snapshot.val());
       this.allPlayers = snapshot.val();
       //console.log(this.allPlayers[this.playerId]);
       this.player = this.allPlayers[this.playerId];
@@ -236,21 +234,28 @@ TTR.prototype.initFirebase = function() {
 
   this.listenAbilities();
   this.listenUsers();
-  this.sendAbility();
+  //var user_text = document.getElementById("user-text");
+  window.addEventListener('keypress', function checkKeyPress(e) {
+    if (e.keyCode === 49 || e.keyCode === 50 || e.keyCode === 51)
+    {
+      console.log("clicked " + e.keyCode);
+      this.sendAbility(getAbility(e.keyCode));
+    }
+  }.bind(this));
   setInterval(function(){ 
-    //console.log(timePassed);
+  //console.log(timePassed);
     timePassed = timePassed + .25; 
     this.updateWpm(getWordPerMinute());
    }.bind(this), 250);
 };
 
 
-TTR.prototype.sendAbility = function() {
+TTR.prototype.sendAbility = function(ability) {
   this.abilityDb= this.database.ref(this.roomPin + "/abilities").push().key;
 
   var updates = {};
   updates[this.roomPin + "/abilities/" + this.abilityDb] = { 
-    "effect": "test",
+    "effect": "skill-"+ability,
     "user": this.playerId
   };
 
@@ -259,7 +264,7 @@ TTR.prototype.sendAbility = function() {
       console.log(error);
     }
     else {
-      console.log("Successfully casted ability!");
+      console.log("wrote ability to db");
     }
   }.bind(this));
 };
@@ -267,7 +272,7 @@ TTR.prototype.sendAbility = function() {
 //updating ur own wpm -- writing
 TTR.prototype.updateWpm = function(updatedWpm) {
   var updates = {};
-  updates[this.roomPin + '/players/' + this.playerId + "/wpm"] = getWordPerMinute();
+  updates[this.roomPin + '/players/' + this.playerId + "/wpm"] = updatedWpm;
   this.database.ref().update(updates, function(error) {
     if(error) {
       console.log(error);
@@ -286,11 +291,15 @@ function isDead(){
 //cast abilities
 function castAbility(skill){
   console.log('casting ability to u - skill: ' + skill);
+  var aoe = document.getElementById("generated-text");
+  aoe.classList.add(skill);
   setTimeout(function() {revert(skill);}, 10000);
 };
 
 //revert client back to normal
 function revert(skill){
+  var aoe = document.getElementById("generated-text");
+  aoe.classList.remove(skill);
   console.log("reverting, skill: " + skill);
 };
 

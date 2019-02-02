@@ -29,6 +29,17 @@ body {
 	align-items: center;
 }
 
+.abilties > div {
+	margin: 20px;
+	padding: 20px;
+	border: 1px solid black;
+	transition: 0.5s;
+}
+
+.abilties > div:hover {
+	background-color: grey;
+}
+
 .left {
 	color: #FFF;
 	height: 100%;
@@ -89,6 +100,31 @@ li:hover {
 
 .highlight-red {
 	background-color: #FF0000
+}
+
+.skill-textcolor {
+	color: yellow !important;
+}
+
+.skill-tilt {
+	/*
+	-ms-transform: skewY(20deg) !important;
+  	-webkit-transform: skewY(20deg) !important;
+  	transform: skewY(20deg) !important;
+	*/
+	-moz-transform: skew(14deg, -7deg) !important;
+	-webkit-transform: skew(14deg, -7deg) !important;
+	-o-transform: skew(14deg, -7deg) !important;
+	-ms-transform: skew(14deg, -7deg) !important;
+	transform: skew(14deg, -7deg) !important;
+}
+
+.skill-fontsize {
+	font-size: 8px !important;
+}
+
+.skill-noinput {
+	display: none;
 }
 
 #WPM {
