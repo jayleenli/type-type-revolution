@@ -31,39 +31,69 @@ function getParameterByName(name, url) {
 }
 
 // Checks that the Firebase SDK has been correctly setup and configured.
-TTR.prototype.checkSetup = function() {
+TTR.prototype.checkSetup = function(){
   if (!window.firebase || !(firebase.app instanceof Function) || !firebase.app().options) {
   window.alert('You have not configured and imported the Firebase SDK. ' +
     'Make sure you go through the codelab setup instructions and make ' +
     'sure you are running the codelab using `firebase serve`');
   }
-};
+}
 
-TTR.prototype.initFirebase = function() {
+TTR.prototype.listenUsers = function() {
+  this.database.ref(this.roomCode + "/players").on('value', (snapshot) => {
+    if (snapshot.val()) {
+      this.allPlayers = snapshot.val();
+      console.log(this.allPlayers[this.playerId]);
+      this.player = this.allPlayers[this.playerId];
+      if (this.player.isDead) {
+        isDead();
+      }
+    }
+  }).bind(this);
+}
+
+TTR.prototype.listenAbilities = function() {
+  this.database.ref(this.roomCode + "/abilities").on('value', (snapshot) => {
+    if (snapshot.val()) {
+      this.abilities = snapshot.val();
+      var recentAbility = abilities[Object.keys(abilities).sort().pop()];
+      if (recentAbility.user !== this.playerId)
+      {
+        this.castAbility(skill);
+      }
+    }
+  }).bind(this);
+}
+
+TTR.prototype.initFirebase = () => {
   //Shortcuts to Firebase SDK features
   this.database = firebase.database();
   
   this.playerId = getParameterByName('id');
   this.roomCode = getParameterByName('room');
-};
+  console.log(this.playerId + " and " + this.roomCode);
 
-TTR.prototype.updateUser = function() {
-  this.database.ref(this.roomCode + "/players").on('value', (snapshot) => {
-    if (snapshot.val()) {
-      this.allPlayers = snapshot.val();
-      console.log(allPlayers.[this.playerId]);
-      this.player = allPlayers.[this.playerId];
-    }
-  }.bind(this));
+  // this.listenAbilities();
+  this.listenUsers();
 }
 
-//calculate word count
-TTR.prototype.updateWordCount = function() {
-
-};
-
-//send skill
-TTR.prototype.sendAbility = function() {
-
+//updating ur own wpm -- writing
+TTR.prototype.updateWpm = () => {
+  console.log("updating wpm");
 }
 
+//updating client-side death
+function isDead(){
+  console.log("ur dead xp !");
+}
+
+//cast abilities
+function castAbility(skill){
+  console.log('casting ability to u');
+  setTimeout(revert(skill), 5000)
+}
+
+//revert client back to normal
+function revert(skill){
+  console.log("reverting!");
+}
