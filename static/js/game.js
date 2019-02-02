@@ -123,6 +123,28 @@ function getParameterByName(name, url) {
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
 };
 
+function renderUserlist(userList) {
+  console.log("re-rendering user list");
+  /*
+  var userNames = userList.map((user) => {
+    return user.name;
+  });
+  */
+  var userNames = document.getElementById("user-list");
+  while( userNames.firstChild ){
+    userNames.removeChild(userNames.firstChild);
+  }
+  for (var key in userList) {
+    console.log(userList[key].name);
+    //userNames.push(userList[key].name);
+    var listElement = document.createElement("li");  
+    var text = document.createTextNode(userList[key].name);  
+    listElement.appendChild(text);
+    userNames.appendChild(listElement);
+  }
+  //console.log(userNames);
+}
+
 // Checks that the Firebase SDK has been correctly setup and configured.
 TTR.prototype.checkSetup = function(){
   if (!window.firebase || !(firebase.app instanceof Function) || !firebase.app().options) {
@@ -138,6 +160,11 @@ TTR.prototype.listenUsers = function() {
       this.allPlayers = snapshot.val();
       //console.log(this.allPlayers[this.playerId]);
       this.player = this.allPlayers[this.playerId];
+
+      //re-rendering user list
+      renderUserlist(this.allPlayers);
+
+      //console.log(this.allPlayers);
       if (this.player.isDead) {
         isDead();
       }
