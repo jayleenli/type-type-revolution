@@ -18,7 +18,7 @@ function TTR() {
 
   //this.joinGameButton.addEventListener('click', this.joinGame.bind(this));
   this.initFirebase();
-}
+};
 
 function getParameterByName(name, url) {
     if (!url) url = window.location.href;
@@ -28,7 +28,7 @@ function getParameterByName(name, url) {
     if (!results) return null;
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
-}
+};
 
 // Checks that the Firebase SDK has been correctly setup and configured.
 TTR.prototype.checkSetup = function(){
@@ -37,7 +37,7 @@ TTR.prototype.checkSetup = function(){
     'Make sure you go through the codelab setup instructions and make ' +
     'sure you are running the codelab using `firebase serve`');
   }
-}
+};
 
 TTR.prototype.listenUsers = function() {
   this.database.ref(this.roomCode + "/players").on('value', (snapshot) => {
@@ -50,7 +50,7 @@ TTR.prototype.listenUsers = function() {
       }
     }
   }).bind(this);
-}
+};
 
 TTR.prototype.listenAbilities = function() {
   this.database.ref(this.roomCode + "/abilities").on('value', (snapshot) => {
@@ -63,9 +63,9 @@ TTR.prototype.listenAbilities = function() {
       }
     }
   }).bind(this);
-}
+};
 
-TTR.prototype.initFirebase = () => {
+TTR.prototype.initFirebase = function() {
   //Shortcuts to Firebase SDK features
   this.database = firebase.database();
   
@@ -75,25 +75,27 @@ TTR.prototype.initFirebase = () => {
 
   // this.listenAbilities();
   this.listenUsers();
-}
+};
 
+/*
 //updating ur own wpm -- writing
 TTR.prototype.updateWpm = () => {
   console.log("updating wpm");
-}
+};
 
 //updating client-side death
 function isDead(){
   console.log("ur dead xp !");
-}
+};
 
 //cast abilities
 function castAbility(skill){
   console.log('casting ability to u');
   setTimeout(revert(skill), 5000)
-}
+};
 
 //revert client back to normal
 function revert(skill){
   console.log("reverting!");
-}
+};
+*/
