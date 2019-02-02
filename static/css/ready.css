@@ -1,0 +1,56 @@
+* {
+	margin:0;
+	padding:0;
+	line-height:1; 
+}
+
+body{
+}
+
+.container {
+	margin: 15px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#left {
+	float:left;
+}
+
+/*
+ul {
+	list-style-type: none;
+	width: 20vw;
+    height: 100vh;
+}
+*/
+
+#user-list{
+    list-style-type: none;
+	width: 20vw;
+    height: 100vh;
+}
+
+ul > li {
+	padding: 8% 0px;
+	text-align: center;
+	background-color: transparent;
+	transition: 1s;
+    font-size: 2.5vw;
+}
+
+li:hover {
+	background-color: grey;
+}
+
+#abilities-list{
+    list-style-type: none;
+}
+
+/*
+.ability-item{
+    text-align: center;
+    font-size: 1vw;
+}
+*/
