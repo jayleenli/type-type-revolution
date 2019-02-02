@@ -26,7 +26,8 @@ body{
 
 ul {
 	list-style-type: none;
-	width: 200px;
+	width: 20vw;
+    height: 100vh;
 }
 
 ul > li {
@@ -51,4 +52,12 @@ li:hover {
 
 .highlight-red {
 	background-color: #FF0000
+}
+
+#timer{
+    display: flex; 
+}
+
+#time-bar{
+    
 }
