@@ -9,7 +9,7 @@ function TTR() {
 
   //Shortcuts to DOM elements
   this.playerNameInput = document.getElementById('playerName');
-  this.roomPinInput = document.getElementById('roomPin');
+  this.roomPinInput = document.getElementById('roomPIN');
   this.joinGameButton = document.getElementById('join-game-button');
   this.warningDiv = document.getElementById('warning-div');
   this.warningMessage = document.getElementById('warning-message');

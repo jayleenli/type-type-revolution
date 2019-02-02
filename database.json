@@ -1,0 +1,28 @@
+{
+	"ABCD": {
+		"game": {
+			"host": "userId",
+			"isGameStarted": false,
+			"isGameFinished": false
+		},
+		"players": {
+			"userId": {
+				"name": "Tina",
+				"wpm": 100,
+				"totalWords": 1000,
+				"points": 1000,
+				"abilities": ["ability1", "ability2", "ability3"],
+				"isDead": false,
+				"accuracy": 0.9,
+				"numIncorrect": 100,
+				"isReady": false
+			}
+		},
+		"abilities": {
+			"id": {
+				"effect": "color red",
+				"user": "userId"
+			}
+		}
+	}
+}
