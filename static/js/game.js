@@ -134,8 +134,9 @@ function renderUserlist(userList) {
   while( userNames.firstChild ){
     userNames.removeChild(userNames.firstChild);
   }
+
   for (var key in userList) {
-    console.log(userList[key].name);
+    //console.log(userList[key].name);
     //userNames.push(userList[key].name);
     var listElement = document.createElement("li");  
     var text = document.createTextNode(userList[key].name);  
