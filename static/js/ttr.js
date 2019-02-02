@@ -11,10 +11,10 @@ function populateWords()
 	word_index = 0;
 	//console.log(words);
 
-	var innerHTMLString = "";
+	var innerHTMLString = "";
 	for (var i = 1; i < words.length; i++)
 	{
-		innerHTMLString += "<span id =\"word-" + i + "\">" + words[i-1] + " </span>";
+		innerHTMLString += "<span id =\"word-" + i + "\">" + words[i-1] + " </span><span></span>";
 	}
 	//console.log(innerHTMLString);
 	document.getElementById("generated-text").innerHTML = innerHTMLString;
@@ -24,26 +24,26 @@ function populateWords()
 //Check the typing text field for typing
 document.getElementById("user-text").addEventListener('keypress', function checkKeyPress(e) {
 
-	if (e.keyCode == 32) //space
+	if (e.keyCode == 32 || e.keyCode == 13) //space
 	{
-		console.log(word_index);
+		//console.log(word_index);
 		e.preventDefault();
 		currentWord = words[word_index];
 		var id = "word-" + (word_index+1); 
-		console.log(id);
-		console.log(currentWord);
+		//console.log(id);
+		//console.log(currentWord);
 
 		if (document.getElementById("user-text").value === currentWord) 
 		{
 			//make the word red
 			document.getElementById(id).className = "highlight-green";
-			console.log("match");
+			//console.log("match");
 		}
 		else if (document.getElementById("user-text").value !== currentWord)
 		{
 			//make the word green
 			document.getElementById(id).className = "highlight-red";
-			console.log("no");
+			//console.log("no");
 		}
 
 		//reset the field
