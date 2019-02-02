@@ -8,7 +8,7 @@ body{
 }
 
 #generated-text {
-	width: 70%;
+	width: 100%;
 	border: 1px solid black;
 	padding: 15px;
 }
@@ -20,6 +20,27 @@ body{
 	align-items: center;
 }
 
+#left {
+	float:left;
+}
+
+ul {
+	list-style-type: none;
+	width: 200px;
+}
+
+ul > li {
+	padding: 8% 0px;
+	text-align: center;
+	background-color: transparent;
+	transition: 1s;
+}
+
+li:hover {
+	background-color: grey;
+}
+
 #user-text {
+	width: 200px;
 	padding: 10px;
 }
