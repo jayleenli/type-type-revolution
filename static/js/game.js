@@ -142,14 +142,14 @@ function startCountDown(timee) //duration in seconds
       console.log("round" + rounds);
       TTR.kickLastWPMUser();
       timeLeft = 31;
-      
+
       timer_bar.classList.add("notransition");
       timer_bar.style.width = "calc(100% - 300px)";
       timer_bar.offsetHeight;
       timer_bar.classList.remove('notransition');
       timer_bar.style.width = "0px";
       
-      //TTR.kickLastWPMUser();
+      TTR.checkforLastUser();
     }
    }, 1000);  
   /*
@@ -260,25 +260,60 @@ function endGame() {
   document.getElementById("inputsForGame").innerHTML = '<div style="font-size: 40px;">Game Over!</div>';
 }
 
-//this.kickLastWPMUser();
+TTR.prototype.checkforLastUser = function() {
+  console.log("checking for last user");
+  this.database.ref(this.roomPin+"/players").once('value').then((snapshot) => {
+    var peoplechecked2 = 0;
+      if (snapshot.val()) {
+      players = snapshot.val();
+      
+      for (var key in players) {
+        console.log("in for loop" + key);
+        if (players[key].isDead == false)
+        {
+          peoplechecked2++;
+          console.log("poeple checked" + peoplechecked2);
+        }
+      }
+
+      if(peoplechecked2 == 1){
+        console.log("there should only be one person alive now, calling end game");
+        endGame();
+      }
+
+    }
+  });
+
+};
 
 TTR.prototype.kickLastWPMUser = function() {
-  this.database.ref(this.roomPin + "/players").on('value', (snapshot) => {
+  if (window.host == this.playerId){
+    console.log("host is kicking");
+  this.database.ref(this.roomPin+"/players").once('value').then((snapshot) => {
     console.log("kickLastWPMUser");
     if (snapshot.val()) {
       players = snapshot.val();
-      console.log("----------", snapshot.val());
+      //console.log("----------", snapshot.val());
       var minWPM = 1000;
       var minKey;
+      var peoplechecked = 0;
       for (var key in players) {
-        if (players[key].isDead === false && players[key].wpm < minWPM)
+        console.log("in for loop" + key);
+        if (players[key].isDead == false)
+        {
+          peoplechecked++;
+          console.log("poeple checked" + peoplechecked);
+        }
+        if (players[key].isDead == false && players[key].wpm < minWPM)
         {
             minKey = key;
             minWPM = players[key].wpm;
             console.log("new min" + minWPM + "key" + minKey);
         }
+
       }
 
+      if(peoplechecked >= 2){
         var updates = {};
         updates[this.roomPin + '/players/' + minKey + "/isDead"] = true;
         this.database.ref().update(updates, function(error) {
@@ -289,9 +324,16 @@ TTR.prototype.kickLastWPMUser = function() {
             console.log("updated isDead");
           }
         }.bind(this));
+      }
+      else
+      {
+        console.log("there should only be one person alive now, calling end game");
+        endGame();
+      }
     }
 
-  }).bind(this);
+  })
+}
 };
 
 // Checks that the Firebase SDK has been correctly setup and configured.
