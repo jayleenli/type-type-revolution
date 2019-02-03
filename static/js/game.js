@@ -214,6 +214,11 @@ function renderUserlist(userList) {
     var text = document.createTextNode(sorted[i].name + "      --- WPM: " + sorted[i].wpm + " | Score: " + sorted[i].totalWords);  
     listElement.appendChild(text);
     userNames.appendChild(listElement);
+    if (sorted[i].isDead) {
+      var deadName = sorted[i].name;
+      var deadPlayer = document.getElementById("li-" + deadName);
+      deadPlayer.style.backgroundColor = "rgba(255, 0, 0, .3";
+    }
   }  
 }
 
@@ -278,9 +283,6 @@ TTR.prototype.kickLastScoreUser = function() {
           }
           else {
             console.log("updated isDead");
-            var deadName = this.players[minKey].name;
-            var deadPlayer = document.getElementById("li-" + deadName);
-            deadPlayer.style.backgroundColor = "rgba(255, 0, 0, .3";
           }
         }.bind(this));
       }
