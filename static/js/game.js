@@ -10,44 +10,54 @@ var word_index = 0;
 var gameEnded = false;
 var points = 0;
 var host = "";
+var date = new Date();
 
+var lastMillis = 0;
+var timeArrayIndex = 0;
+var timeArray = [];
 
 window.onload = function() {
   window.host = "";
   window.TTR = new TTR();
   var user_text = document.getElementById("user-text");
+
   user_text.addEventListener('keypress', function checkKeyPress(e) {
-    if (started === 0)
-    {
+    if (started === 0) {
       passTime();
       started = 1;
+
+      date = new Date();
+      lastMillis = date.getTime();
     }
-    
-    if (e.keyCode >= 49 && e.keyCode <=51)
-    {
+    if (e.keyCode >= 49 && e.keyCode <= 51) {
         e.preventDefault();
     }
-
-    if (e.keyCode == 32 || e.keyCode == 13) //space
-    {
-      //console.log(word_index);
+    if (e.keyCode == 32 || e.keyCode == 13) { //space
       e.preventDefault();
       currentWord = words[word_index];
       var id = "word-" + (word_index+1); 
-      //console.log(id);
-      //console.log(currentWord);
 
-      if (user_text.value === currentWord) 
-      {
-        //make the word red
+      if (user_text.value === currentWord) {
+        date = new Date();
+        var timeDiff = (date.getTime() - lastMillis) / currentWord.length * 4.5;
+        timeArray[timeArrayIndex % 50] = timeDiff;
+
+        lastMillis = date.getTime();
+        timeArrayIndex++;
+
+        //updateWPM takes care of the rest
+
+        //Word is correct, make the word green
         document.getElementById(id).className = "highlight-green";
         typedWords++;
         points++;
         //console.log("match");
       }
-      else if (user_text.value !== currentWord)
-      {
-        //make the word green
+      else if (user_text.value !== currentWord) {
+        date = new Date();
+        lastMillis = date.getTime();
+
+        //Word is not correct, make the word red
         document.getElementById(id).className = "highlight-red";
         incorrectWords++;
         //console.log("no");
@@ -153,18 +163,35 @@ function passTime()
    }, 250);
 };
 
-function getWordPerMinute()
-{
-  var wpm = Math.floor((typedWords/timePassed)*60);
-  if (document.getElementById("WPM") && (gameEnded == false))
-  {
-    document.getElementById("WPM").innerHTML = "WPM: " + wpm;
-  }
-  return wpm;
-};
+function getWordPerMinute() {
+  //Start counting after the first ten words
+  if(timeArray.length > 10) {
+    var totalTime = 0;
 
-function updateScoreAndAccurary()
-{
+    for(var i = 0; i < timeArray.length; i++) {
+      totalTime += timeArray[i];
+    }
+    var wpm = (60 * timeArray.length / (totalTime /= 1000)).toFixed(0);
+
+    //Set WPM on page
+    if (document.getElementById("WPM") && (gameEnded == false)) {
+      document.getElementById("WPM").innerHTML = "WPM: " + wpm;
+    }
+    return wpm;
+  }
+  return 0;
+}
+
+// function getWordPerMinute() {
+//   var wpm = Math.floor((typedWords/timePassed)*60);
+//   if (document.getElementById("WPM") && (gameEnded == false))
+//   {
+//     document.getElementById("WPM").innerHTML = "WPM: " + wpm;
+//   }
+//   return wpm;
+// };
+
+function updateScoreAndAccuracy() {
   if (document.getElementById("score"))
   {
     document.getElementById("score").innerHTML = "Score: " + typedWords;
@@ -369,10 +396,9 @@ TTR.prototype.listenerGameStart = function() {
         }
       }.bind(this));
       setInterval(function(){ 
-      //console.log(timePassed);
         timePassed = timePassed + .25; 
         this.updateWpm(getWordPerMinute());
-        updateScoreAndAccurary();
+        updateScoreAndAccuracy();
         
        }.bind(this), 250);
     }
