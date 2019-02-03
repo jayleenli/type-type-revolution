@@ -102,5 +102,77 @@ TTR.prototype.joinGame = function() {
 }
 
 TTR.prototype.createGame = function() {
-	console.log("wow");
+	this.playerName = this.createGameNameInput.value;
+	this.roomPin = randomString(4, "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+
+	if(this.playerName && this.roomPin) {
+		this.database.ref(this.roomPin).once('value', function(snapshot) {
+			//Check if this game code exists
+			if(!snapshot.val()) {
+				//This game does not exist, create the game
+				var gameObject = {
+					game: {
+						host: "",
+						isGameFinished: false,
+						isGameStarted: false
+					}
+				}
+
+				this.database.ref(this.roomPin).set(gameObject, function(error) {
+					if(error) {
+						console.log(error);
+					}
+					else {
+						//Game object was successfully created, now add yourself
+						var player = {
+							abilities: [],
+							accuracy: 100,
+							isDead: false,
+							isReady: false,
+							name: this.playerName,
+							numIncorrect: 0,
+							points: 0,
+							totalWords: 0,
+							wpm: 0
+						}
+
+						this.playerId = this.database.ref(this.roomPin + "/players").push().key;
+						console.log(this.playerId);
+
+						var updates = {};
+						updates[this.roomPin + "/players/" + this.playerId] = player;
+
+						this.database.ref().update(updates, function(error) {
+							if(error) {
+								console.log(error);
+								this.warningMessage.innerHTML = "Oops! There was an error adding you to the game. Error: " + error;
+								this.warningDiv.removeAttribute("hidden");
+							}
+							else {
+								window.location.replace("ready.html?id=" + this.playerId + "&room=" + this.roomPin);
+								console.log("Redirecting to game page");
+							}
+						}.bind(this));
+					}
+				}.bind(this));
+			}
+			else {
+				//Gane already exists, display warning
+				this.warningMessage.innerHTML = "Oops! An error occurred. Please try creating your game again.";
+				this.warningDiv.removeAttribute("hidden");
+			}
+		}.bind(this));
+	}
+	else {
+		//One or more input fields is missing
+		this.warningMessage.innerHTML = "Please enter a name.";
+		this.warningDiv.removeAttribute("hidden");
+	}
+}
+
+//Generate random string function
+function randomString(length, chars) {
+  var result = '';
+  for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];
+  return result;
 }
