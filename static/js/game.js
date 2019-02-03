@@ -108,7 +108,10 @@ function passTime()
 function getWordPerMinute()
 {
   var wpm = Math.floor((typedWords/timePassed)*60);
-  document.getElementById("WPM").innerHTML = "WPM: " + wpm;
+  if (document.getElementById("RPM"))
+  {
+    document.getElementById("WPM").innerHTML = "WPM: " + wpm;
+  }
   return wpm;
 };
 
@@ -149,6 +152,10 @@ function renderUserlist(userList) {
   }
   //console.log(userNames);
   
+}
+
+function endGame() {
+  document.getElementById("inputsForGame").innerHTML = '<div style="font-size: 40px;">Game Over!</div>';
 }
 
 //this.kickLastWPMUser();
@@ -234,6 +241,9 @@ TTR.prototype.initFirebase = function() {
 
   this.listenAbilities();
   this.listenUsers();
+  this.listenEndGame();
+
+  this.hostDisconnect();
   //var user_text = document.getElementById("user-text");
   window.addEventListener('keypress', function checkKeyPress(e) {
     if (e.keyCode === 49 || e.keyCode === 50 || e.keyCode === 51)
@@ -248,10 +258,6 @@ TTR.prototype.initFirebase = function() {
     this.updateWpm(getWordPerMinute());
    }.bind(this), 250);
 
-  
-  setInterval(function(){ 
-    setTimeout(this.updateTimer(), 1000);
-  }.bind(this), 1000);
 };
 
 
@@ -288,49 +294,28 @@ TTR.prototype.updateWpm = function(updatedWpm) {
   }.bind(this));
 };
 
-
-TTR.prototype.setHost = function() {
+//If the current user who is the host has disconnected 
+TTR.prototype.listenEndGame = function() {
   this.database.ref(this.roomPin).on('value', (snapshot) => {
-    if (snapshot.numChildren() === 1) {
-      console.log(snapshot.numChildren()===1);
-        //begin timer if the number of children is 1 
-        //(one player joined, that means that person is the host)
-        //set the current guy to be the host
-        var updates = {};
-                updates[this.roomPin + '/game/host'] = this.playerId;
-                this.database.ref().update(updates, function(error) {
-                  if(error) {
-                    console.log(error);
-                  }
-                  else {
-                    console.log("updated host to " + this.playerId);
-                  }
-                }.bind(this));
-      }
-  }).bind(this);
+    if (snapshot.child("game").child("isGameFinished").val() === true)
+    {
+        console.log("game is over");
+        endGame();
+    }
+  });
 };
 
-TTR.prototype.updateTimer = function() {
+//Other clients chec kto see if host disconnected
+TTR.prototype.hostDisconnect = function() {
   this.database.ref(this.roomPin).on('value', (snapshot) => {
-        var time = snapshot.child("game").child("timer").val();
-        console.log("time " + time);
-        if (time >= 1 && (this.playerId == snapshot.child("game").child("host").val()))
-        {
-            time--;
-            console.log('updated');
-            var updates = {};
-                updates[this.roomPin + '/game/timer'] = time;
-                this.database.ref().update(updates, function(error) {
-                  if(error) {
-                    console.log(error);
-                  }
-                  else {
-                    console.log("updated timer");
-                  }
-                }.bind(this));
-        }
-    })
+    if (this.playerId == snapshot.child("game").child("host").val())
+    {
+        console.log("i am the host");
+        var ref = this.database.ref(this.roomPin + "/game/isGameFinished").onDisconnect().set(true);
+    }
+  });
 };
+
 
 //updating client-side death
 function isDead(){
