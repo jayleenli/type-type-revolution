@@ -53,16 +53,6 @@ window.onload = function() {
       word_index++;
       user_text.value = "";
     }
-    console.log('hewo ' + TTR.playerId);
-    TTR.getHost().then(function(host) {
-      TTR.getGameStatus().then(function(status) {
-        console.log(status.isGameStarted == false);
-        if (host == TTR.playerId && status.isGameStarted == false)
-        {
-          TTR.setStartTime();
-        }
-      });
-    })
   });
 };
 
