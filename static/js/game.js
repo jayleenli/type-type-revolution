@@ -11,6 +11,7 @@ var gameEnded = false;
 var points = 0;
 var host = "";
 var date = new Date();
+var rounds = 0;
 
 var lastMillis = 0;
 var timeArrayIndex = 0;
@@ -119,26 +120,29 @@ function populateWords()
   document.getElementById("generated-text").innerHTML = innerHTMLString;
 };
 
-function startCountDown(time) //duration in seconds
+function startCountDown(timee) //duration in seconds
 {
   console.log('in countdown');
-  var startTime = time;
+  var startTime = timee;
   document.getElementById("timer-bar").style.width = "0px";
   var countdown = setInterval(function(){ 
     //console.log(timer);
     console.log(( "hello" + Math.floor(Date.now() / 1000)));
-    console.log("time " + time);
-    var timeLeft = 30 - (Math.floor(Date.now() / 1000) - time);
+    console.log("time " + timee);
+    var timeLeft = 30 - ( (Math.floor(Date.now() / 1000) - (timee+(rounds*30))) );
     console.log(timeLeft);
     document.getElementById("timer-num").innerHTML = timeLeft;
     if (timeLeft <= 0) {
-      clearInterval(countdown);
+      //clearInterval(countdown);
       timeLeft = 0;
       console.log('time up');
+      console.log('resetting');
+      rounds++;
+      console.log("round" + rounds);
+      timeLeft = 31;
       //TTR.kickLastWPMUser();
     }
    }, 1000);  
-
   /*
   document.getElementById("timer-bar").style.width = "0px";
   var timer = duration;
@@ -378,10 +382,10 @@ TTR.prototype.startTimer = function() {
 };
 
 TTR.prototype.listenerGameStart = function() {
-   this.database.ref(this.roomPin + "/game/isGameStarted").on('value', (snapshot) => {
-    if (snapshot.val() == true) {
+   this.database.ref(this.roomPin + "/game").on('value', (snapshot) => {
+    if (snapshot.child("isGameStarted").val() == true) {
       console.log("in game start, turning on listeners");
-      startCountDown(snapshot.val());
+      startCountDown(snapshot.child("timestamp").val());
       this.listenUsers();
       this.listenEndGame();
       this.listenAbilities();
@@ -396,6 +400,7 @@ TTR.prototype.listenerGameStart = function() {
         }
       }.bind(this));
       setInterval(function(){ 
+      //console.log(timePassed);
         timePassed = timePassed + .25; 
         this.updateWpm(getWordPerMinute());
         updateScoreAndAccuracy();
@@ -453,7 +458,7 @@ TTR.prototype.updateWpm = function(updatedWpm) {
 
 //listen to see if all users have entered the game
 TTR.prototype.listenEndGame = function() {
-  this.database.ref(this.roomPin + "/players").on('value', (snapshot) => {
+  this.database.ref(this.roomPin).on('value', (snapshot) => {
     if (snapshot.child("game").child("isGameFinished").val() === true)
     {
         console.log("game is over");
@@ -461,7 +466,6 @@ TTR.prototype.listenEndGame = function() {
     }
   });
 };
-
 
 //If the current user who is the host has disconnected 
 TTR.prototype.listenAllInGame = function() {
