@@ -247,6 +247,11 @@ TTR.prototype.initFirebase = function() {
     timePassed = timePassed + .25; 
     this.updateWpm(getWordPerMinute());
    }.bind(this), 250);
+
+  
+  setInterval(function(){ 
+    setTimeout(this.updateTimer(), 1000);
+  }.bind(this), 1000);
 };
 
 
@@ -281,6 +286,50 @@ TTR.prototype.updateWpm = function(updatedWpm) {
       console.log("updating wpm");
     }
   }.bind(this));
+};
+
+
+TTR.prototype.setHost = function() {
+  this.database.ref(this.roomPin).on('value', (snapshot) => {
+    if (snapshot.numChildren() === 1) {
+      console.log(snapshot.numChildren()===1);
+        //begin timer if the number of children is 1 
+        //(one player joined, that means that person is the host)
+        //set the current guy to be the host
+        var updates = {};
+                updates[this.roomPin + '/game/host'] = this.playerId;
+                this.database.ref().update(updates, function(error) {
+                  if(error) {
+                    console.log(error);
+                  }
+                  else {
+                    console.log("updated host to " + this.playerId);
+                  }
+                }.bind(this));
+      }
+  }).bind(this);
+};
+
+TTR.prototype.updateTimer = function() {
+  this.database.ref(this.roomPin).on('value', (snapshot) => {
+        var time = snapshot.child("game").child("timer").val();
+        console.log("time " + time);
+        if (time >= 1 && (this.playerId == snapshot.child("game").child("host").val()))
+        {
+            time--;
+            console.log('updated');
+            var updates = {};
+                updates[this.roomPin + '/game/timer'] = time;
+                this.database.ref().update(updates, function(error) {
+                  if(error) {
+                    console.log(error);
+                  }
+                  else {
+                    console.log("updated timer");
+                  }
+                }.bind(this));
+        }
+    })
 };
 
 //updating client-side death
