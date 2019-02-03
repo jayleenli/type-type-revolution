@@ -351,10 +351,10 @@ TTR.prototype.startTimer = function() {
 };
 
 TTR.prototype.listenerGameStart = function() {
-   this.database.ref(this.roomPin).on('value', (snapshot) => {
-    if (snapshot.child("game").child("isGameStarted").val() == true) {
+   this.database.ref(this.roomPin + "/game/isGameStarted").on('value', (snapshot) => {
+    if (snapshot.val() == true) {
       console.log("in game start, turning on listeners");
-      startCountDown(snapshot.child("game").child("timestamp").val());
+      startCountDown(snapshot.val());
       this.listenUsers();
       this.listenEndGame();
       this.listenAbilities();
