@@ -141,7 +141,7 @@ TTR.prototype.createGame = function() {
 
 						var updates = {};
 						updates[this.roomPin + "/players/" + this.playerId] = player;
-						updates[this.roomPin + "/host/"] = this.playerId;
+						updates[this.roomPin + "/game/host/"] = this.playerId;
 
 						this.database.ref().update(updates, function(error) {
 							if(error) {
