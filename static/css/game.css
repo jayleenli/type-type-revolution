@@ -63,8 +63,8 @@ ul > li {
 	padding: 8% 0px;
 	background-color: transparent;
 	border-bottom: 1px solid #d9d9d9;
-	transition: 1s;
-	cursor: pointer;
+/*	transition: 1s;
+*/	cursor: pointer;
 }
 
 li:hover {

@@ -209,7 +209,8 @@ function renderUserlist(userList) {
     return userList[category]; // Convert array of categories to array of objects
   });  
   for (var i in sorted) {
-    var listElement = document.createElement("li");  
+    var listElement = document.createElement("li"); 
+    listElement.setAttribute("id", "li-" + sorted[i].name); 
     var text = document.createTextNode(sorted[i].name + "      --- WPM: " + sorted[i].wpm + " | Score: " + sorted[i].totalWords);  
     listElement.appendChild(text);
     userNames.appendChild(listElement);
@@ -251,7 +252,7 @@ TTR.prototype.kickLastScoreUser = function() {
   if (window.host == this.playerId){
   this.database.ref(this.roomPin+"/players").once('value').then((snapshot) => {
     if (snapshot.val()) {
-      players = snapshot.val();
+      this.players = snapshot.val();
       var minScore = 1000;
       var minKey;
       var peoplechecked = 0;
@@ -277,6 +278,9 @@ TTR.prototype.kickLastScoreUser = function() {
           }
           else {
             console.log("updated isDead");
+            var deadName = this.players[minKey].name;
+            var deadPlayer = document.getElementById("li-" + deadName);
+            deadPlayer.style.backgroundColor = "rgba(255, 0, 0, .3";
           }
         }.bind(this));
       }
