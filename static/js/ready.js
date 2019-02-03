@@ -63,6 +63,10 @@ TTR.prototype.listenReady = function() {
 }
 
 TTR.prototype.updateReady = function(){
+	var playerLi = document.getElementById("li-" + this.player.name);
+	playerLi.setAttribute("background-color", "#000000");
+	playerLi.setAttribute("color", "#ffffff");
+	playerLi.insertAdjacentHTML('beforeend', "---READY")
 	var updateReady = {};
 	updateReady[this.roomPin + "/players/" + this.playerId + "/isReady"] = true;
 	this.database.ref().update(updateReady, (error) => {
@@ -95,7 +99,7 @@ TTR.prototype.checkReady = function() {
 		}
 		if (allReady) {
 			var updateStart = {};
-			updateStart[this.roomPin + "/game/isGameStarted"] = allReady;
+			updateStart[this.roomPin + "/game/isGameReady"] = allReady;
 			this.database.ref().update(updateStart, (error) => {
 				if (error) {
 					console.log(error);
@@ -119,12 +123,14 @@ function renderUserlist(userList, user) {
   }
 
   var playerName = document.createElement("li");
+  playerName.setAttribute("id", "li-" + user.name);
   playerName.appendChild(document.createTextNode(user.name));
   userNames.appendChild(playerName);
 
   for (var key in userList) {
   	if (userList[key].name != user.name){
-		var listElement = document.createElement("li");
+		var listElement = document.createElement("li" );
+		listElement.setAttribute("id", "li-" + userList[key].name)
 		var text = document.createTextNode(userList[key].name);
 		listElement.appendChild(text);
 		userNames.appendChild(listElement);
@@ -132,6 +138,11 @@ function renderUserlist(userList, user) {
   	}
 
   }
+
+
+  // function readyUserList() {
+
+  // }
 
   // var joinedUsers = userList;
 
