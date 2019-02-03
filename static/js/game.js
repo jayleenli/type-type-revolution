@@ -9,14 +9,16 @@ var incorrectWords = 0;
 var word_index = 0;
 var gameEnded = false;
 var points = 0;
+var host = "";
+
 
 window.onload = function() {
+  window.host = "";
   window.TTR = new TTR();
   var user_text = document.getElementById("user-text");
   user_text.addEventListener('keypress', function checkKeyPress(e) {
     if (started === 0)
     {
-      startCountDown(30);
       passTime();
       started = 1;
     }
@@ -79,7 +81,14 @@ function getAbility(id) {
 //Firebase Initialization
 function TTR() {
   this.checkSetup();
-  this.initFirebase();
+  this.database = firebase.database();
+  this.playerId = getParameterByName('id');
+  this.roomPin = getParameterByName('room');
+  this.getHostName().then((host) => {
+    window.host = host;
+    console.log('updated window.host to ', window.host);
+    this.initFirebase();
+  });
 };
 
 function populateWords()
@@ -100,8 +109,24 @@ function populateWords()
   document.getElementById("generated-text").innerHTML = innerHTMLString;
 };
 
-function startCountDown(duration) //duration in seconds
+function startCountDown(time) //duration in seconds
 {
+  console.log('in countdown');
+  var startTime = time;
+  document.getElementById("timer-bar").style.width = "0px";
+  var countdown = setInterval(function(){ 
+    //console.log(timer);
+    var timeLeft = 30 - (Math.floor(Date.now() / 1000) - time);
+    document.getElementById("timer-num").innerHTML = timeLeft;
+    if (timeLeft <= 0) {
+      clearInterval(countdown);
+      timeLeft = 0;
+      console.log('time up');
+      //TTR.kickLastWPMUser();
+    }
+   }, 1000);  
+
+  /*
   document.getElementById("timer-bar").style.width = "0px";
   var timer = duration;
   var countdown = setInterval(function(){ 
@@ -113,6 +138,7 @@ function startCountDown(duration) //duration in seconds
 
         }
    }, 1000);
+   */
 };
 
 function passTime()
@@ -272,37 +298,94 @@ TTR.prototype.listenAbilities = function() {
 
 TTR.prototype.initFirebase = function() {
   //Shortcuts to Firebase SDK features
-  this.database = firebase.database();
-  
-  this.playerId = getParameterByName('id');
-  this.roomPin = getParameterByName('room');
-  console.log(this.playerId + " and " + this.roomPin);
-  //this.hostListenerTimer();
-  this.listenAbilities();
-  this.listenUsers();
-  this.listenEndGame();
 
-  this.hostDisconnect();
-  //var user_text = document.getElementById("user-text");
-  window.addEventListener('keypress', function checkKeyPress(e) {
-    if (points >= 10){
-      if (e.keyCode === 49 || e.keyCode === 50 || e.keyCode === 51)
-      {
-        console.log("clicked " + e.keyCode);
-        this.sendAbility(getAbility(e.keyCode));
-        points = points - 10;
-      }
+  console.log(this.playerId + " and " + this.roomPin);
+
+  console.log('window host: ', window.host);
+
+  var updates = {};
+  updates[this.roomPin + '/players/' + this.playerId + "/isInGame"] = true;
+  this.database.ref().update(updates, function(error) {
+    if(error) {
+      console.log(error);
+    }
+    else {
+      console.log("user isInGame");
     }
   }.bind(this));
-  setInterval(function(){ 
-  //console.log(timePassed);
-    timePassed = timePassed + .25; 
-    this.updateWpm(getWordPerMinute());
-    updateScoreAndAccurary();
-    
-   }.bind(this), 250);
+
+  //this.hostListenerTimer();
+  this.listenAllInGame();
 };
 
+//start countdown
+TTR.prototype.startTimer = function() {
+  console.log(window.host);
+  if (this.playerId === window.host) {
+      this.database.ref(this.roomPin).once('value').then((snapshot) => {
+        console.log(snapshot.child("game").child("isGameStarted").val());
+        var status = snapshot.child("game").child("isGameStarted").val();
+
+        if (status == false) {
+          console.log('went into IF');
+          var updates = {};
+          time = Math.floor(Date.now() / 1000);
+          console.log(time);
+          updates[this.roomPin + "/game/timestamp"] = time;
+          updates[this.roomPin + "/game/isGameStarted"] = true;
+
+          this.database.ref().update(updates, function(error) {
+            if(error) {
+              console.log(error);
+            }
+            else {
+              console.log("updated start timestamp and started game");
+            }
+          }.bind(this));
+        }
+      });
+  }
+};
+
+TTR.prototype.listenerGameStart = function() {
+  this.database.ref(this.roomPin).once('value').then((snapshot) => {
+    if (snapshot.child("game").child("isGameStarted").val() == true) {
+      console.log("in game start, turning on listeners");
+      startCountDown(snapshot.child("game").child("timestamp").val());
+      this.listenUsers();
+      this.listenEndGame();
+      this.listenAbilities();
+      window.addEventListener('keypress', function checkKeyPress(e) {
+        if (points >= 10){
+          if (e.keyCode === 49 || e.keyCode === 50 || e.keyCode === 51)
+          {
+            console.log("clicked " + e.keyCode);
+            this.sendAbility(getAbility(e.keyCode));
+            points = points - 10;
+          }
+        }
+      }.bind(this));
+      setInterval(function(){ 
+      //console.log(timePassed);
+        timePassed = timePassed + .25; 
+        this.updateWpm(getWordPerMinute());
+        updateScoreAndAccurary();
+        
+       }.bind(this), 250);
+    }
+  });
+}
+
+//get host name
+TTR.prototype.getHostName = function() {
+  return this.database.ref(this.roomPin).once('value').then((snapshot) => {
+    if (!snapshot.child("game").child("host").val()) {
+      return null;
+    }
+    console.log(snapshot.child("game").child("host").val());
+    return snapshot.child("game").child("host").val();
+  });
+};
 
 TTR.prototype.sendAbility = function(ability) {
   this.abilityDb= this.database.ref(this.roomPin + "/abilities").push().key;
@@ -353,18 +436,31 @@ TTR.prototype.listenEndGame = function() {
 
 //If the current user who is the host has disconnected 
 TTR.prototype.listenAllInGame = function() {
-  this.database.ref(this.roomPin + '/players').on('value', (snapshot) => {
-    if (snapshot.child("game").child("isGameFinished").val() === true)
-    {
-        console.log("game is over");
-        endGame();
-    }
+  var allIn = true;
+  this.database.ref(this.roomPin).on('value', (snapshot) => {
+        var allPlayers = snapshot.val().players;
+        if (this.playerId === window.host) {
+          for (var key in allPlayers) {
+            if(allPlayers[key].isInGame === false) {
+              allIn = false;
+              break;
+            }
+          }
+        }
   });
+  if (allIn === true) {
+    console.log("All in let's start!");
+    //this.database.ref(this.roomPin).off('value');
+    this.hostDisconnect();
+    this.listenerGameStart();
+    this.startTimer();
+  }
 };
 
 //Other clients chec kto see if host disconnected
 TTR.prototype.hostDisconnect = function() {
   this.database.ref(this.roomPin).on('value', (snapshot) => {
+    //this.hostName = snapshot.child("game").child("host").val();
     if (this.playerId == snapshot.child("game").child("host").val())
     {
         console.log("i am the host");
