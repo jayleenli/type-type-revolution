@@ -214,6 +214,10 @@ function updateScoreAndAccuracy() {
   {
     document.getElementById("accuracy").innerHTML = "Accuracy: " + Math.floor((typedWords/word_index)*100) +"%";
   }
+  if (document.getElementById("points"))
+  {
+    document.getElementById("points").innerHTML = "Points: " + points;
+  }
 }
 
 function getParameterByName(name, url) {
