@@ -8,6 +8,7 @@ var typedWords = 0.0;
 var incorrectWords = 0;
 var word_index = 0;
 var gameEnded = false;
+var points = 0;
 
 window.onload = function() {
   window.TTR = new TTR();
@@ -39,6 +40,7 @@ window.onload = function() {
         //make the word red
         document.getElementById(id).className = "highlight-green";
         typedWords++;
+        points++;
         //console.log("match");
       }
       else if (user_text.value !== currentWord)
@@ -283,10 +285,13 @@ TTR.prototype.initFirebase = function() {
   this.hostDisconnect();
   //var user_text = document.getElementById("user-text");
   window.addEventListener('keypress', function checkKeyPress(e) {
-    if (e.keyCode === 49 || e.keyCode === 50 || e.keyCode === 51)
-    {
-      console.log("clicked " + e.keyCode);
-      this.sendAbility(getAbility(e.keyCode));
+    if (points >= 10){
+      if (e.keyCode === 49 || e.keyCode === 50 || e.keyCode === 51)
+      {
+        console.log("clicked " + e.keyCode);
+        this.sendAbility(getAbility(e.keyCode));
+        points = points - 10;
+      }
     }
   }.bind(this));
   setInterval(function(){ 
