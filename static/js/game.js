@@ -259,7 +259,7 @@ TTR.prototype.kickLastWPMUser = function() {
     console.log("kickLastWPMUser");
     if (snapshot.val()) {
       players = snapshot.val();
-      //console.log(players);
+      console.log("----------", snapshot.val());
       var minWPM = 1000;
       var minKey;
       for (var key in players) {
