@@ -339,9 +339,21 @@ TTR.prototype.updateWpm = function(updatedWpm) {
   }.bind(this));
 };
 
-//If the current user who is the host has disconnected 
+//listen to see if all users have entered the game
 TTR.prototype.listenEndGame = function() {
-  this.database.ref(this.roomPin).on('value', (snapshot) => {
+  this.database.ref(this.roomPin + "/players").on('value', (snapshot) => {
+    if (snapshot.child("game").child("isGameFinished").val() === true)
+    {
+        console.log("game is over");
+        endGame();
+    }
+  });
+};
+
+
+//If the current user who is the host has disconnected 
+TTR.prototype.listenAllInGame = function() {
+  this.database.ref(this.roomPin + '/players').on('value', (snapshot) => {
     if (snapshot.child("game").child("isGameFinished").val() === true)
     {
         console.log("game is over");
