@@ -56,9 +56,9 @@ ul > li {
 	cursor: pointer;
 }
 
-li:hover {
+/*li:hover {
 	background-color: grey;
-}
+}*/
 
 .title{
     position: fixed;
@@ -80,27 +80,26 @@ li:hover {
 .ability-item{
 	border: none;
 	background-color: #a9a9a9;
-	display: flex;
-	margin: 0px 0px 10px 0px;
-	padding-left: 20px;
-
+/*	display: flex;
+*/	margin: 0px 0px 10px 0px;
+/*	padding-left: 20px;
+*/
 }
 
-.ability-item:hover {
+/*.ability-item:hover {
 	background-color: grey;
-}
+}*/
 
 #abilities-list{
     list-style-type: none;
-    width: 50%;
-	overflow: scroll;
+    width: 60%;
+	overflow: auto;
 /*	justify-content: center;
 	align-items: center;*/
 }
 
 .ability-name{
-	padding-left: 25px;
-	padding-right: 30px;
+	padding: 5px 0px 10px 0px;
 }
 
 #lower-right{
@@ -119,3 +118,8 @@ li:hover {
 	text-align: center;
 	font-size: 35px;
 }
+
+p{
+	padding: 0px 50px
+}
+
