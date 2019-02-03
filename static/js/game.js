@@ -127,7 +127,7 @@ function startCountDown(timee) //duration in seconds
       //clearInterval(countdown);
       timeLeft = 0;
       rounds++;
-      TTR.kickLastWPMUser();
+      TTR.kickLastScoreUser();
       timeLeft = 31;
 
       timer_bar.classList.add("notransition");
@@ -203,7 +203,7 @@ function renderUserlist(userList) {
 
   var sorted = Object.keys(userList)
   .sort(function(a, b) {
-    return userList[b].wpm - userList[a].wpm; // Organize the category array
+    return userList[b].totalWords - userList[a].totalWords; // Organize the category array
   })
   .map(function(category) {
     return userList[category]; // Convert array of categories to array of objects
@@ -215,6 +215,7 @@ function renderUserlist(userList) {
     userNames.appendChild(listElement);
   }  
 }
+
 
 function endGame() {
   gameEnded = true;
@@ -246,12 +247,12 @@ TTR.prototype.checkforLastUser = function() {
 }
 };
 
-TTR.prototype.kickLastWPMUser = function() {
+TTR.prototype.kickLastScoreUser = function() {
   if (window.host == this.playerId){
   this.database.ref(this.roomPin+"/players").once('value').then((snapshot) => {
     if (snapshot.val()) {
       players = snapshot.val();
-      var minWPM = 1000;
+      var minScore = 1000;
       var minKey;
       var peoplechecked = 0;
       for (var key in players) {
@@ -259,10 +260,10 @@ TTR.prototype.kickLastWPMUser = function() {
         {
           peoplechecked++;
         }
-        if (players[key].isDead == false && players[key].wpm < minWPM)
+        if (players[key].isDead == false && players[key].totalWords < minScore)
         {
             minKey = key;
-            minWPM = players[key].wpm;
+            minScore = players[key].totalWords;
         }
 
       }
