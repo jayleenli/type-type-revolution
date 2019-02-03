@@ -116,7 +116,10 @@ function startCountDown(time) //duration in seconds
   document.getElementById("timer-bar").style.width = "0px";
   var countdown = setInterval(function(){ 
     //console.log(timer);
+    console.log(( "hello" + Math.floor(Date.now() / 1000)));
+    console.log("time " + time);
     var timeLeft = 30 - (Math.floor(Date.now() / 1000) - time);
+    console.log(timeLeft);
     document.getElementById("timer-num").innerHTML = timeLeft;
     if (timeLeft <= 0) {
       clearInterval(countdown);
@@ -348,7 +351,7 @@ TTR.prototype.startTimer = function() {
 };
 
 TTR.prototype.listenerGameStart = function() {
-  this.database.ref(this.roomPin).once('value').then((snapshot) => {
+   this.database.ref(this.roomPin).on('value', (snapshot) => {
     if (snapshot.child("game").child("isGameStarted").val() == true) {
       console.log("in game start, turning on listeners");
       startCountDown(snapshot.child("game").child("timestamp").val());
@@ -452,8 +455,8 @@ TTR.prototype.listenAllInGame = function() {
     console.log("All in let's start!");
     //this.database.ref(this.roomPin).off('value');
     this.hostDisconnect();
-    this.listenerGameStart();
     this.startTimer();
+    this.listenerGameStart();
   }
 };
 
