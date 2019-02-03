@@ -226,6 +226,7 @@ function renderUserlist(userList) {
 function endGame() {
   gameEnded = true;
   document.getElementById("inputsForGame").innerHTML = '<div style="font-size: 40px;">Game Over!</div>';
+  document.getElementById("reset-link").removeAttribute("hidden");
   document.getElementById("timer").style.display = "none";
 }
 
