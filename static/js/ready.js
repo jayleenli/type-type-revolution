@@ -63,10 +63,8 @@ TTR.prototype.listenReady = function() {
 }
 
 TTR.prototype.updateReady = function(){
-	var playerLi = document.getElementById("li-" + this.player.name);
-	playerLi.setAttribute("background-color", "#000000");
-	playerLi.setAttribute("color", "#ffffff");
-	playerLi.insertAdjacentHTML('beforeend', "---READY")
+	this.readyButton.setAttribute("disabled", true);
+	this.readyButton.setAttribute("opacity", 0.4);
 	var updateReady = {};
 	updateReady[this.roomPin + "/players/" + this.playerId + "/isReady"] = true;
 	this.database.ref().update(updateReady, (error) => {
@@ -93,11 +91,20 @@ TTR.prototype.checkReady = function() {
 		var inGamePlayers = (snapshot.val())
 		var allReady = true;
 		for (var key in inGamePlayers) {
+			// readyUserListItem(inGamePlayers[key].name);
 			if (!inGamePlayers[key].isReady) {
 				allReady = false;
 			}
+			else {
+				var readyName = inGamePlayers[key].name;
+				var readyPlayer = document.getElementById("li-" + readyName);
+				readyPlayer.style.backgroundColor = "#db9a0e";
+				readyPlayer.style.color = "#33254f";
+				readyPlayer.innerHTML = readyName + "---READY";
+			}
 		}
 		if (allReady) {
+			this.database.ref(this.roomPin + "/players").off('value');
 			var updateStart = {};
 			updateStart[this.roomPin + "/game/isGameReady"] = allReady;
 			this.database.ref().update(updateStart, (error) => {
@@ -140,9 +147,12 @@ function renderUserlist(userList, user) {
   }
 
 
-  // function readyUserList() {
-
-  // }
+ //  function readyUserListItem(readyName) {
+	// var readyPlayer = document.getElementById("li-" + readyName);
+	// readyPlayer.setAttribute("background-color", "#000000");
+	// readyPlayer.setAttribute("color", "#ffffff");
+	// readyPlayer.innerHTML = readyName + "---READY";
+ //  }
 
   // var joinedUsers = userList;
 
