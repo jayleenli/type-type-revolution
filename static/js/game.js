@@ -5,6 +5,9 @@ populateWords();
 var started = 0;
 var timePassed = 0; //time passed in seconds
 var typedWords = 0.0;
+var incorrectWords = 0;
+var word_index = 0;
+var gameEnded = false;
 
 window.onload = function() {
   window.TTR = new TTR();
@@ -42,6 +45,7 @@ window.onload = function() {
       {
         //make the word green
         document.getElementById(id).className = "highlight-red";
+        incorrectWords++;
         //console.log("no");
       }
 
@@ -108,12 +112,25 @@ function passTime()
 function getWordPerMinute()
 {
   var wpm = Math.floor((typedWords/timePassed)*60);
-  if (document.getElementById("RPM"))
+  if (document.getElementById("WPM") && (gameEnded == false))
   {
     document.getElementById("WPM").innerHTML = "WPM: " + wpm;
   }
   return wpm;
 };
+
+function updateScoreAndAccurary()
+{
+  if (document.getElementById("score"))
+  {
+    document.getElementById("score").innerHTML = "Score: " + typedWords;
+  }
+
+  if (document.getElementById("accuracy"))
+  {
+    document.getElementById("accuracy").innerHTML = "Accuracy: " + Math.floor((typedWords/word_index)*100) +"%";
+  }
+}
 
 function getParameterByName(name, url) {
     if (!url) url = window.location.href;
@@ -146,7 +163,7 @@ function renderUserlist(userList) {
   });  
   for (var i in sorted) {
     var listElement = document.createElement("li");  
-    var text = document.createTextNode(sorted[i].name + "      --- WPM: " + sorted[i].wpm);  
+    var text = document.createTextNode(sorted[i].name + "      --- WPM: " + sorted[i].wpm + " | Score: " + sorted[i].totalWords);  
     listElement.appendChild(text);
     userNames.appendChild(listElement);
   }
@@ -155,6 +172,7 @@ function renderUserlist(userList) {
 }
 
 function endGame() {
+  gameEnded = true;
   document.getElementById("inputsForGame").innerHTML = '<div style="font-size: 40px;">Game Over!</div>';
 }
 
@@ -256,6 +274,8 @@ TTR.prototype.initFirebase = function() {
   //console.log(timePassed);
     timePassed = timePassed + .25; 
     this.updateWpm(getWordPerMinute());
+    updateScoreAndAccurary();
+    
    }.bind(this), 250);
 
 };
@@ -284,6 +304,8 @@ TTR.prototype.sendAbility = function(ability) {
 TTR.prototype.updateWpm = function(updatedWpm) {
   var updates = {};
   updates[this.roomPin + '/players/' + this.playerId + "/wpm"] = updatedWpm;
+  updates[this.roomPin + '/players/' + this.playerId + "/totalWords"] = typedWords;
+  updates[this.roomPin + '/players/' + this.playerId + "/numIncorrect"] = incorrectWords;
   this.database.ref().update(updates, function(error) {
     if(error) {
       console.log(error);
