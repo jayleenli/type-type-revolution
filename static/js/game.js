@@ -261,29 +261,35 @@ function endGame() {
 }
 
 TTR.prototype.checkforLastUser = function() {
-  console.log("checking for last user");
-  this.database.ref(this.roomPin+"/players").once('value').then((snapshot) => {
-    var peoplechecked2 = 0;
-      if (snapshot.val()) {
-      players = snapshot.val();
-      
-      for (var key in players) {
-        console.log("in for loop" + key);
-        if (players[key].isDead == false)
-        {
-          peoplechecked2++;
-          console.log("poeple checked" + peoplechecked2);
+  if (this.playerId == window.host)
+  {
+    
+    console.log("checking for last user");
+    this.database.ref(this.roomPin+"/players").once('value').then((snapshot) => {
+      var peoplechecked2 = 0;
+        if (snapshot.val()) {
+        players = snapshot.val();
+        
+        for (var key in players) {
+          console.log("in for loop" + key);
+          if (players[key].isDead == false)
+          {
+            peoplechecked2++;
+            console.log("poeple checked2222" + peoplechecked2);
+          }
         }
+
+        if(peoplechecked2 == 1){
+          console.log("there should only be one person alive now, calling end game");
+          var ref = this.database.ref(this.roomPin + "/game/isGameFinished").set(true);
+        
+          endGame();
+
+        }
+
       }
-
-      if(peoplechecked2 == 1){
-        console.log("there should only be one person alive now, calling end game");
-        endGame();
-      }
-
-    }
-  });
-
+    });
+}
 };
 
 TTR.prototype.kickLastWPMUser = function() {
