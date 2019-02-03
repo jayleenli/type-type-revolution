@@ -115,6 +115,7 @@ TTR.prototype.createGame = function() {
 					game: {
 						host: "",
 						isGameFinished: false,
+						isGameReady: false,
 						isGameStarted: false,
 						timestamp: 0
 					}
