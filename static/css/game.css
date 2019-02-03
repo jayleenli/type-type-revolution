@@ -146,6 +146,14 @@ li:hover {
   transition-timing-function: linear;
 }
 
+.notransition {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -o-transition: none !important;
+  transition: none !important;
+}
+
+
 #timer-bar-back {
 	position: fixed;
   width: calc(100% - 300px);

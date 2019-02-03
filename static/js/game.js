@@ -122,9 +122,10 @@ function populateWords()
 
 function startCountDown(timee) //duration in seconds
 {
+  var timer_bar = document.getElementById("timer-bar");
   console.log('in countdown');
   var startTime = timee;
-  document.getElementById("timer-bar").style.width = "0px";
+  timer_bar.style.width = "0px";
   var countdown = setInterval(function(){ 
     //console.log(timer);
     console.log(( "hello" + Math.floor(Date.now() / 1000)));
@@ -141,6 +142,13 @@ function startCountDown(timee) //duration in seconds
       console.log("round" + rounds);
       TTR.kickLastWPMUser();
       timeLeft = 31;
+      
+      timer_bar.classList.add("notransition");
+      timer_bar.style.width = "calc(100% - 300px)";
+      timer_bar.offsetHeight;
+      timer_bar.classList.remove('notransition');
+      timer_bar.style.width = "0px";
+      
       //TTR.kickLastWPMUser();
     }
    }, 1000);  
