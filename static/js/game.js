@@ -148,8 +148,6 @@ function startCountDown(timee) //duration in seconds
       timer_bar.offsetHeight;
       timer_bar.classList.remove('notransition');
       timer_bar.style.width = "0px";
-      
-      TTR.checkforLastUser();
     }
    }, 1000);  
   /*
@@ -258,14 +256,14 @@ function renderUserlist(userList) {
 function endGame() {
   gameEnded = true;
   document.getElementById("inputsForGame").innerHTML = '<div style="font-size: 40px;">Game Over!</div>';
+  document.getElementById("timer").style.display = "none";
 }
 
 TTR.prototype.checkforLastUser = function() {
   if (this.playerId == window.host)
   {
-    
     console.log("checking for last user");
-    this.database.ref(this.roomPin+"/players").once('value').then((snapshot) => {
+    this.database.ref(this.roomPin+"/players").on('value', (snapshot) => {
       var peoplechecked2 = 0;
         if (snapshot.val()) {
         players = snapshot.val();
@@ -282,9 +280,6 @@ TTR.prototype.checkforLastUser = function() {
         if(peoplechecked2 == 1){
           console.log("there should only be one person alive now, calling end game");
           var ref = this.database.ref(this.roomPin + "/game/isGameFinished").set(true);
-        
-          endGame();
-
         }
 
       }
@@ -447,6 +442,7 @@ TTR.prototype.listenerGameStart = function() {
       this.listenUsers();
       this.listenEndGame();
       this.listenAbilities();
+      this.checkforLastUser();
       window.addEventListener('keypress', function checkKeyPress(e) {
         if (points >= 10){
           if (e.keyCode === 49 || e.keyCode === 50 || e.keyCode === 51)
@@ -464,6 +460,9 @@ TTR.prototype.listenerGameStart = function() {
         updateScoreAndAccuracy();
         
        }.bind(this), 250);
+    }
+    if (snapshot.child("isGameFinished").val() == true) {
+      this.database.ref(this.roomPin).off('value');
     }
   });
 }
@@ -562,7 +561,9 @@ TTR.prototype.hostDisconnect = function() {
 
 //updating client-side death
 function isDead(){
-  console.log("ur dead xp !");
+  //console.log("ur dead xp !");
+  document.getElementById("inputsForGame").innerHTML = '<div style="font-size: 40px;">Game Over!</div>';
+  document.getElementById("timer").style.display = "none";
 };
 
 //cast abilities
