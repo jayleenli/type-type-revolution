@@ -212,6 +212,10 @@ function updateScoreAndAccuracy() {
   {
     document.getElementById("accuracy").innerHTML = "Accuracy: " + Math.floor((typedWords/word_index)*100) +"%";
   }
+  if (document.getElementById("points"))
+  {
+    document.getElementById("points").innerHTML = "Points: " + points;
+  }
 }
 
 function getParameterByName(name, url) {
@@ -368,14 +372,15 @@ TTR.prototype.listenAbilities = function() {
   this.database.ref(this.roomPin + "/abilities").on('value', (snapshot) => {
     if (snapshot.val()) {
       this.abilities = snapshot.val();
-      var recentAbility = this.abilities[Object.keys(this.abilities).sort().pop()];
-      if (recentAbility.user !== this.playerId)
-      {
-        castAbility(recentAbility.effect);
+      this.recentAbility = this.abilities[Object.keys(this.abilities).sort().pop()];
+      if (this.recentAbility.user !== this.playerId) {
+        this.database.ref(this.roomPin + "/players/" + this.recentAbility.user + "/name").once('value', (snapshot) => {
+          castAbility(this.recentAbility.effect, snapshot.val());
+        });
       }
       else {
-        console.log(recentAbility.effect);
-        var active = document.getElementById(recentAbility.effect);
+        console.log(this.recentAbility.effect);
+        var active = document.getElementById(this.recentAbility.effect);
         active.classList.add("skill-active");
         setTimeout(function() {active.classList.remove("skill-active");}, 10000);
       }
@@ -567,8 +572,23 @@ function isDead(){
 };
 
 //cast abilities
-function castAbility(skill){
-  console.log('casting ability to u - skill: ' + skill);
+function castAbility(skill, name){
+  console.log('casting ability to u - skill: ' + skill + ", user: " + name);
+
+  var skillName = "";
+  if(skill == "skill-textcolor") {
+    skillName = "Color Change";
+  }
+  else if(skill == "skill-fontsize") {
+    skillName = "Shrink Font";
+  }
+  else if (skill = "skill-tilt") {
+    skillName = "Tiltation";
+  }
+
+  var abilityDisplay = document.getElementById("ability-display");
+  abilityDisplay.innerHTML = name + " used " + skillName + "!";
+
   var aoe = document.getElementById("generated-text");
   aoe.classList.add(skill);
   setTimeout(function() {revert(skill);}, 10000);
