@@ -58,7 +58,20 @@ window.onload = function() {
 
 function getAbility(id) {
   var user_text = document.getElementById("user-text");
-  return document.getElementById(id).getAttribute('data-id');
+  var skill_name = ""
+  if (id === 49)
+  {
+    skill_name = "skill-textcolor";
+  }
+  else if (id === 50)
+  {
+    skill_name = "skill-fontsize";
+  }
+  else if (id === 51) 
+  {
+    skill_name = "skill-tilt";
+  }
+  return document.getElementById(skill_name).getAttribute('data-id');
 }
 
 //Firebase Initialization
@@ -245,6 +258,12 @@ TTR.prototype.listenAbilities = function() {
       {
         castAbility(recentAbility.effect);
       }
+      else {
+        console.log(recentAbility.effect);
+        var active = document.getElementById(recentAbility.effect);
+        active.classList.add("skill-active");
+        setTimeout(function() {active.classList.remove("skill-active");}, 10000);
+      }
     }
   }).bind(this);
 };
@@ -285,7 +304,7 @@ TTR.prototype.sendAbility = function(ability) {
 
   var updates = {};
   updates[this.roomPin + "/abilities/" + this.abilityDb] = { 
-    "effect": "skill-"+ability,
+    "effect": ability,
     "user": this.playerId
   };
 

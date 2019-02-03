@@ -36,10 +36,6 @@ body {
 	transition: 0.5s;
 }
 
-.abilties > div:hover {
-	background-color: grey;
-}
-
 .left {
 	color: #FFF;
 	height: 100%;
@@ -125,6 +121,10 @@ li:hover {
 
 .skill-noinput {
 	display: none;
+}
+
+.skill-active {
+	background-color: grey;
 }
 
 .number-trackers {
