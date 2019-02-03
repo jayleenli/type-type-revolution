@@ -28,7 +28,11 @@ TTR.prototype.initFirebase = function() {
   this.roomPin = getParameterByName('room');
   console.log(this.playerId + " and " + this.roomPin);
 
+  displayInfo(this.roomPin);
+
   this.listenUsers();
+  this.listenReady();
+  this.checkReady();
  };
 
 
@@ -41,7 +45,9 @@ TTR.prototype.initFirebase = function() {
       this.player = this.allPlayers[this.playerId];
 
       //re-rendering user list
-      renderUserlist(this.allPlayers);
+      renderUserlist(this.allPlayers, this.player);
+
+      this.listenReady();
 
       //console.log(this.allPlayers);
       if (this.player.isDead) {
@@ -51,8 +57,60 @@ TTR.prototype.initFirebase = function() {
   }).bind(this);
 };
 
+TTR.prototype.listenReady = function() {
+	this.readyButton = document.getElementById("ready-button");
+	this.readyButton.addEventListener('click', this.updateReady.bind(this))
+}
 
-function renderUserlist(userList) {
+TTR.prototype.updateReady = function(){
+	var updateReady = {};
+	updateReady[this.roomPin + "/players/" + this.playerId + "/isReady"] = true;
+	this.database.ref().update(updateReady, (error) => {
+		if (error) {
+			console.log(error);
+		}
+		else {
+			console.log(this.playerId);
+		}
+	})
+}
+
+
+// var x = () => {
+
+// };
+
+// var x = function() {
+
+// }
+
+TTR.prototype.checkReady = function() {
+	this.database.ref(this.roomPin + "/players").on('value', (snapshot) => {
+		var inGamePlayers = (snapshot.val())
+		var allReady = true;
+		for (var key in inGamePlayers) {
+			if (!inGamePlayers[key].isReady) {
+				allReady = false;
+			}
+		}
+		if (allReady) {
+			var updateStart = {};
+			updateStart[this.roomPin + "/game/isGameStarted"] = allReady;
+			this.database.ref().update(updateStart, (error) => {
+				if (error) {
+					console.log(error);
+				}
+				else{
+					window.location.replace("game.html?id=" + this.playerId + "&room=" + this.roomPin);
+					console.log("Redirecting to game.html");
+				}
+			})
+		}
+	})
+}
+
+
+function renderUserlist(userList, user) {
   console.log("re-rendering user list");
 
   var userNames = document.getElementById("user-list");
@@ -60,24 +118,18 @@ function renderUserlist(userList) {
     userNames.removeChild(userNames.firstChild);
   }
 
-  // var playerName = document.createElement("li");
-  // playerName.appendChild(document.createTextNode(this.playerID));
-  // userNames.appendChild(playerName);
+  var playerName = document.createElement("li");
+  playerName.appendChild(document.createTextNode(user.name));
+  userNames.appendChild(playerName);
 
   for (var key in userList) {
-  // 	if (userList[key].name != this.playerID){
-		// var listElement = document.createElement("li");
-		// var text = document.createTextNode(userList[key].name);
-		// listElement.appendChild(text);
-		// userNames.appendChild(listElement);
-	 //  	console.log(userList[key].name);
-  // 	}
-  	var listElement = document.createElement("li");
-	var text = document.createTextNode(userList[key].name);
-	listElement.appendChild(text);
-	userNames.appendChild(listElement);
-  	console.log(userList[key].name);
-
+  	if (userList[key].name != user.name){
+		var listElement = document.createElement("li");
+		var text = document.createTextNode(userList[key].name);
+		listElement.appendChild(text);
+		userNames.appendChild(listElement);
+	  	console.log(userList[key].name);
+  	}
 
   }
 
@@ -98,6 +150,12 @@ function renderUserlist(userList) {
   // }
   //console.log(userNames);
   
+}
+
+
+function displayInfo(roomPIN){
+	var displayRoom = document.getElementById("PIN-num");
+	displayRoom.insertAdjacentHTML('beforeend', roomPIN);
 }
 
  function getParameterByName(name, url) {
