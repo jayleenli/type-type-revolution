@@ -19,5 +19,5 @@ We are proud of creating a serverless real-time multiplayer game!
 ### What We learned
 We learned that Firebase can be great but also can be super annoying.
 
-### What's next for TextTextRevolution
+### What's next for TypeTypeRevolution
 We want to include more abilities, as well as the option for users to be able to choose which set of abilities that we like to have in their arsenal during gameplay. 
