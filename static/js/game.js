@@ -139,6 +139,7 @@ function startCountDown(timee) //duration in seconds
       console.log('resetting');
       rounds++;
       console.log("round" + rounds);
+      TTR.kickLastWPMUser();
       timeLeft = 31;
       //TTR.kickLastWPMUser();
     }
@@ -255,6 +256,7 @@ function endGame() {
 
 TTR.prototype.kickLastWPMUser = function() {
   this.database.ref(this.roomPin + "/players").on('value', (snapshot) => {
+    console.log("kickLastWPMUser");
     if (snapshot.val()) {
       players = snapshot.val();
       //console.log(players);
