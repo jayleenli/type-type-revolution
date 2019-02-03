@@ -52,7 +52,6 @@ window.onload = function() {
         document.getElementById(id).className = "highlight-green";
         typedWords++;
         points++;
-        //console.log("match");
       }
       else if (user_text.value !== currentWord) {
         date = new Date();
@@ -61,7 +60,6 @@ window.onload = function() {
         //Word is not correct, make the word red
         document.getElementById(id).className = "highlight-red";
         incorrectWords++;
-        //console.log("no");
       }
 
       //reset the field
@@ -105,41 +103,30 @@ function TTR() {
 function populateWords()
 {
   var wordsString = document.getElementById("generated-text").innerHTML;
-  //console.log(wordsString);
   words = wordsString.split(" ");
   words = words.slice(10,words.length); //weird 8 blanks in beginning
   word_index = 0;
-  //console.log(words);
 
   var innerHTMLString = "";
   for (var i = 1; i < words.length; i++)
   {
     innerHTMLString += "<span id =\"word-" + i + "\">" + words[i-1] + " </span><span></span>";
   }
-  //console.log(innerHTMLString);
   document.getElementById("generated-text").innerHTML = innerHTMLString;
 };
 
 function startCountDown(timee) //duration in seconds
 {
   var timer_bar = document.getElementById("timer-bar");
-  console.log('in countdown');
   var startTime = timee;
   timer_bar.style.width = "0px";
   var countdown = setInterval(function(){ 
-    //console.log(timer);
-    console.log(( "hello" + Math.floor(Date.now() / 1000)));
-    console.log("time " + timee);
     var timeLeft = 30 - ( (Math.floor(Date.now() / 1000) - (timee+(rounds*30))) );
-    console.log(timeLeft);
     document.getElementById("timer-num").innerHTML = timeLeft;
     if (timeLeft <= 0) {
       //clearInterval(countdown);
       timeLeft = 0;
-      console.log('time up');
-      console.log('resetting');
       rounds++;
-      console.log("round" + rounds);
       TTR.kickLastWPMUser();
       timeLeft = 31;
 
@@ -150,25 +137,12 @@ function startCountDown(timee) //duration in seconds
       timer_bar.style.width = "0px";
     }
    }, 1000);  
-  /*
-  document.getElementById("timer-bar").style.width = "0px";
-  var timer = duration;
-  var countdown = setInterval(function(){ 
-    //console.log(timer);
-    document.getElementById("timer-num").innerHTML = timer;
-    if (--timer < 0) {
-      //hit zero do something
-            clearInterval(countdown)
 
-        }
-   }, 1000);
-   */
 };
 
 function passTime()
 {
   setInterval(function(){ 
-    //console.log(timePassed);
     timePassed = timePassed + .25; 
     getWordPerMinute();
    }, 250);
@@ -193,14 +167,6 @@ function getWordPerMinute() {
   return 0;
 }
 
-// function getWordPerMinute() {
-//   var wpm = Math.floor((typedWords/timePassed)*60);
-//   if (document.getElementById("WPM") && (gameEnded == false))
-//   {
-//     document.getElementById("WPM").innerHTML = "WPM: " + wpm;
-//   }
-//   return wpm;
-// };
 
 function updateScoreAndAccuracy() {
   if (document.getElementById("score"))
@@ -229,12 +195,7 @@ function getParameterByName(name, url) {
 };
 
 function renderUserlist(userList) {
-  console.log("re-rendering user list");
-  /*
-  var userNames = userList.map((user) => {
-    return user.name;
-  });
-  */
+
   var userNames = document.getElementById("user-list");
   while( userNames.firstChild ){
     userNames.removeChild(userNames.firstChild);
@@ -252,9 +213,7 @@ function renderUserlist(userList) {
     var text = document.createTextNode(sorted[i].name + "      --- WPM: " + sorted[i].wpm + " | Score: " + sorted[i].totalWords);  
     listElement.appendChild(text);
     userNames.appendChild(listElement);
-  }
-  //console.log(userNames);
-  
+  }  
 }
 
 function endGame() {
@@ -266,23 +225,19 @@ function endGame() {
 TTR.prototype.checkforLastUser = function() {
   if (this.playerId == window.host)
   {
-    console.log("checking for last user");
     this.database.ref(this.roomPin+"/players").on('value', (snapshot) => {
       var peoplechecked2 = 0;
         if (snapshot.val()) {
         players = snapshot.val();
         
         for (var key in players) {
-          console.log("in for loop" + key);
           if (players[key].isDead == false)
           {
             peoplechecked2++;
-            console.log("poeple checked2222" + peoplechecked2);
           }
         }
 
         if(peoplechecked2 == 1){
-          console.log("there should only be one person alive now, calling end game");
           var ref = this.database.ref(this.roomPin + "/game/isGameFinished").set(true);
         }
 
@@ -293,27 +248,21 @@ TTR.prototype.checkforLastUser = function() {
 
 TTR.prototype.kickLastWPMUser = function() {
   if (window.host == this.playerId){
-    console.log("host is kicking");
   this.database.ref(this.roomPin+"/players").once('value').then((snapshot) => {
-    console.log("kickLastWPMUser");
     if (snapshot.val()) {
       players = snapshot.val();
-      //console.log("----------", snapshot.val());
       var minWPM = 1000;
       var minKey;
       var peoplechecked = 0;
       for (var key in players) {
-        console.log("in for loop" + key);
         if (players[key].isDead == false)
         {
           peoplechecked++;
-          console.log("poeple checked" + peoplechecked);
         }
         if (players[key].isDead == false && players[key].wpm < minWPM)
         {
             minKey = key;
             minWPM = players[key].wpm;
-            console.log("new min" + minWPM + "key" + minKey);
         }
 
       }
@@ -332,7 +281,6 @@ TTR.prototype.kickLastWPMUser = function() {
       }
       else
       {
-        console.log("there should only be one person alive now, calling end game");
         endGame();
       }
     }
@@ -354,13 +302,11 @@ TTR.prototype.listenUsers = function() {
   this.database.ref(this.roomPin + "/players").on('value', (snapshot) => {
     if (snapshot.val()) {
       this.allPlayers = snapshot.val();
-      //console.log(this.allPlayers[this.playerId]);
       this.player = this.allPlayers[this.playerId];
 
       //re-rendering user list
       renderUserlist(this.allPlayers);
 
-      //console.log(this.allPlayers);
       if (this.player.isDead) {
         isDead();
       }
@@ -379,7 +325,6 @@ TTR.prototype.listenAbilities = function() {
         });
       }
       else {
-        console.log(this.recentAbility.effect);
         var active = document.getElementById(this.recentAbility.effect);
         active.classList.add("skill-active");
         setTimeout(function() {active.classList.remove("skill-active");}, 10000);
@@ -412,17 +357,13 @@ TTR.prototype.initFirebase = function() {
 
 //start countdown
 TTR.prototype.startTimer = function() {
-  console.log(window.host);
   if (this.playerId === window.host) {
       this.database.ref(this.roomPin).once('value').then((snapshot) => {
-        console.log(snapshot.child("game").child("isGameStarted").val());
         var status = snapshot.child("game").child("isGameStarted").val();
 
         if (status == false) {
-          console.log('went into IF');
           var updates = {};
           time = Math.floor(Date.now() / 1000);
-          console.log(time);
           updates[this.roomPin + "/game/timestamp"] = time;
           updates[this.roomPin + "/game/isGameStarted"] = true;
 
@@ -442,7 +383,6 @@ TTR.prototype.startTimer = function() {
 TTR.prototype.listenerGameStart = function() {
    this.database.ref(this.roomPin + "/game").on('value', (snapshot) => {
     if (snapshot.child("isGameStarted").val() == true) {
-      console.log("in game start, turning on listeners");
       startCountDown(snapshot.child("timestamp").val());
       this.listenUsers();
       this.listenEndGame();
@@ -452,14 +392,12 @@ TTR.prototype.listenerGameStart = function() {
         if (points >= 10){
           if (e.keyCode === 49 || e.keyCode === 50 || e.keyCode === 51)
           {
-            console.log("clicked " + e.keyCode);
             this.sendAbility(getAbility(e.keyCode));
             points = points - 10;
           }
         }
       }.bind(this));
       setInterval(function(){ 
-      //console.log(timePassed);
         timePassed = timePassed + .25; 
         this.updateWpm(getWordPerMinute());
         updateScoreAndAccuracy();
@@ -478,7 +416,6 @@ TTR.prototype.getHostName = function() {
     if (!snapshot.child("game").child("host").val()) {
       return null;
     }
-    console.log(snapshot.child("game").child("host").val());
     return snapshot.child("game").child("host").val();
   });
 };
@@ -512,9 +449,6 @@ TTR.prototype.updateWpm = function(updatedWpm) {
     if(error) {
       console.log(error);
     }
-    else {
-      console.log("updating wpm");
-    }
   }.bind(this));
 };
 
@@ -523,7 +457,6 @@ TTR.prototype.listenEndGame = function() {
   this.database.ref(this.roomPin).on('value', (snapshot) => {
     if (snapshot.child("game").child("isGameFinished").val() === true)
     {
-        console.log("game is over");
         endGame();
     }
   });
@@ -544,8 +477,6 @@ TTR.prototype.listenAllInGame = function() {
         }
   });
   if (allIn === true) {
-    console.log("All in let's start!");
-    //this.database.ref(this.roomPin).off('value');
     this.hostDisconnect();
     this.startTimer();
     this.listenerGameStart();
@@ -555,10 +486,8 @@ TTR.prototype.listenAllInGame = function() {
 //Other clients chec kto see if host disconnected
 TTR.prototype.hostDisconnect = function() {
   this.database.ref(this.roomPin).on('value', (snapshot) => {
-    //this.hostName = snapshot.child("game").child("host").val();
     if (this.playerId == snapshot.child("game").child("host").val())
     {
-        console.log("i am the host");
         var ref = this.database.ref(this.roomPin + "/game/isGameFinished").onDisconnect().set(true);
     }
   });
@@ -566,14 +495,12 @@ TTR.prototype.hostDisconnect = function() {
 
 //updating client-side death
 function isDead(){
-  //console.log("ur dead xp !");
   document.getElementById("inputsForGame").innerHTML = '<div style="font-size: 40px;">Game Over!</div>';
   document.getElementById("timer").style.display = "none";
 };
 
 //cast abilities
 function castAbility(skill, name){
-  console.log('casting ability to u - skill: ' + skill + ", user: " + name);
 
   var skillName = "";
   if(skill == "skill-textcolor") {
@@ -598,6 +525,5 @@ function castAbility(skill, name){
 function revert(skill){
   var aoe = document.getElementById("generated-text");
   aoe.classList.remove(skill);
-  console.log("reverting, skill: " + skill);
 };
 
