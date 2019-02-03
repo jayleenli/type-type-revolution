@@ -266,7 +266,6 @@ TTR.prototype.initFirebase = function() {
   this.playerId = getParameterByName('id');
   this.roomPin = getParameterByName('room');
   console.log(this.playerId + " and " + this.roomPin);
-  this.setHost();
   //this.hostListenerTimer();
   this.listenAbilities();
   this.listenUsers();
@@ -333,6 +332,7 @@ TTR.prototype.listenEndGame = function() {
     {
         console.log("game is over");
         endGame();
+    }
   });
 };
 
@@ -345,6 +345,7 @@ TTR.prototype.hostDisconnect = function() {
         var ref = this.database.ref(this.roomPin + "/game/isGameFinished").onDisconnect().set(true);
     }
   });
+};
 
 //updating client-side death
 function isDead(){
