@@ -1,6 +1,6 @@
 # SLO-HACKS-2019
-Submitted for SLO HACKS 2019
-https://devpost.com/software/type-type-revolution
+Submitted for SLO HACKS 2019  
+https://devpost.com/software/type-type-revolution  
 Awards: Best Game/Game Design and Best Domain Name
 
 ### Inspiration
